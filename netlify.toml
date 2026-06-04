@@ -1,0 +1,21 @@
+# ============================================================
+# ECOPULSE WEB — Netlify (frontend Next.js 14, monorepo pnpm)
+# Coloque este arquivo na RAIZ do repositório.
+#
+# No painel do Netlify, defina a variável de ambiente:
+#   NEXT_PUBLIC_API_URL = https://<sua-api>.up.railway.app/api/v1
+# (pegue a URL pública depois que o backend subir no Railway)
+# ============================================================
+
+[build]
+  base = "apps/web"
+  command = "pnpm build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+  # NEXT_PUBLIC_API_URL é inlinada no build -> defina no painel do Netlify
+  # (Site settings > Environment variables) e dispare um redeploy ao mudar.
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
