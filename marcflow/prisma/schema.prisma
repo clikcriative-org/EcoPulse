@@ -59,6 +59,10 @@ model Session {
   status      String    @default("DISCONNECTED") // CONNECTED, DISCONNECTED, ZOMBIE
   qr          String?   @db.Text
   config      Json?     // Store instance specific config (e.g. "read_receipts": true)
+  // "cloud" = WhatsApp Cloud API oficial da Meta; "baileys" = conexão por QR code (não oficial)
+  provider           String  @default("cloud")
+  cloudPhoneNumberId String? @unique // Phone Number ID do painel da Meta (identifica a sessão no webhook)
+  cloudWabaId        String? // WhatsApp Business Account ID (templates)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -74,6 +78,16 @@ model Session {
   sessionAccesses SessionAccess[]
   flows       Flow[]
   archiveChats ArchiveChat[]
+  cloudCredential CloudCredential?
+}
+
+// Token da Cloud API fora da tabela Session: as rotas devolvem a sessão inteira ao navegador e o token nunca pode ir junto
+model CloudCredential {
+  sessionId   String   @id // Session.id (cuid)
+  accessToken String   @db.Text
+  updatedAt   DateTime @updatedAt
+
+  session     Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 }
 
 model Contact {

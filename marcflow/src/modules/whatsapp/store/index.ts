@@ -185,6 +185,7 @@ export const bindSessionStore = (sock: WASocket, sessionId: string, io: Server |
                 if (!keyId) continue;
 
                 const statusMap: Record<number, string> = {
+                    [-1]: 'FAILED', // Cloud API delivery failure
                     0: 'PENDING',
                     1: 'SENT',
                     2: 'DELIVERED',

@@ -10,6 +10,7 @@ import { ArrowLeft, Play, Square, RotateCcw, LogOut, Power, Trash2, QrCode, Acti
 import Link from "next/link";
 import { io, Socket } from "socket.io-client";
 import { QRCodeSVG } from "qrcode.react";
+import { CloudSettings } from "@/components/dashboard/cloud-settings";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -27,6 +28,7 @@ type SessionDetail = {
     name: string;
     sessionId: string;
     status: string;
+    provider?: string;
     userId: string;
     uptime: number; // in seconds
     me?: {
@@ -216,6 +218,8 @@ export default function SessionDetailPage() {
                     {session.name} <span className="text-gray-400 font-normal text-xs sm:text-sm block sm:inline mt-1 sm:mt-0">({session.sessionId})</span>
                 </h1>
             </div>
+
+            {session.provider === "cloud" && <CloudSettings sessionId={sessionId} onSaved={fetchSession} />}
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Status Card */}

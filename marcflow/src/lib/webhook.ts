@@ -371,6 +371,9 @@ export async function testWebhook(webhookId: string, url: string, secret?: strin
  * Helper to download and save media
  */
 export async function downloadAndSaveMedia(message: WAMessage, sessionId: string): Promise<string | null> {
+    // Cloud API messages arrive with the file already saved (or a public link): nothing to decrypt
+    const cloudMedia = (message as { _localMediaUrl?: string | null })._localMediaUrl;
+    if (cloudMedia !== undefined) return cloudMedia;
     try {
         const messageContent = normalizeMessageContent(message.message);
         if (!messageContent) {

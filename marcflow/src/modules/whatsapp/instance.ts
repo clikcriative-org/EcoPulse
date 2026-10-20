@@ -17,6 +17,8 @@ import { bindAutoReply } from "./store/autoreply";
 import { bindPpGuard } from "./store/ppguard";
 import { antispam } from "./antispam";
 import { logger } from "@/lib/logger";
+import { CloudSocket } from "./cloud/socket";
+import { getCloudPhoneInfo } from "./cloud/api";
 
 const MAX_RECONNECT_ATTEMPTS = 3;
 
@@ -46,7 +48,7 @@ export class WhatsAppInstance {
     async init() {
         const sessionData = await prisma.session.findUnique({
             where: { sessionId: this.sessionId },
-            include: { botConfig: true }
+            include: { botConfig: true, cloudCredential: true }
         });
         if (!sessionData) {
             logger.warn("Instance", `Session ${this.sessionId} not found in DB, aborting init`);
@@ -54,6 +56,8 @@ export class WhatsAppInstance {
         }
         this.config = sessionData?.config || {};
         const botConfig = (sessionData as any)?.botConfig;
+
+        if (sessionData.provider === "cloud") return this.initCloud(sessionData);
 
         const { state, saveCreds } = await usePrismaAuthState(this.sessionId);
         const { version } = await fetchLatestBaileysVersion();
@@ -91,6 +95,53 @@ export class WhatsAppInstance {
         this.socket.ev.on("connection.update", async (update) => {
             await this.handleConnectionUpdate(update);
         });
+    }
+
+    /** Official WhatsApp Cloud API: no QR, no persistent socket. Messages arrive through /api/whatsapp/cloud/webhook. */
+    private async initCloud(session: { cloudPhoneNumberId: string | null; cloudWabaId: string | null; cloudCredential: { accessToken: string } | null }) {
+        const fail = async (reason: string) => {
+            this.status = "STOPPED";
+            this.isStopped = true;
+            this.socket = null;
+            this.io?.to(this.sessionId).emit("connection.update", { status: "STOPPED", qr: null, error: reason });
+            await prisma.session.update({ where: { sessionId: this.sessionId }, data: { status: "STOPPED", qr: null } }).catch(() => {});
+            logger.error("Instance", `Cloud session ${this.sessionId} not started: ${reason}`);
+            this.onRemovedFromManager?.();
+        };
+        if (!session.cloudPhoneNumberId || !session.cloudCredential) {
+            return fail("Phone Number ID e token de acesso não configurados");
+        }
+        const creds = { phoneNumberId: session.cloudPhoneNumberId, accessToken: session.cloudCredential.accessToken, wabaId: session.cloudWabaId };
+
+        let info: Awaited<ReturnType<typeof getCloudPhoneInfo>>;
+        try {
+            info = await getCloudPhoneInfo(creds);
+        } catch (e: any) {
+            return fail(e?.message || "credenciais inválidas");
+        }
+
+        const sock = new CloudSocket(creds, this.sessionId, { phone: info.display_phone_number, name: info.verified_name });
+        const originalSendMessage = sock.sendMessage.bind(sock);
+        const sessionId = this.sessionId;
+        sock.sendMessage = async (jid: string, content: any, options?: any) => {
+            await antispam.enqueue(sessionId, jid, content);
+            return originalSendMessage(jid, content, options);
+        };
+        // the rest of MarcFlow only touches the WASocket subset CloudSocket implements
+        this.socket = sock as unknown as WASocket;
+
+        bindSessionStore(this.socket, this.sessionId, this.io);
+        bindChatState(this.socket, this.sessionId, this.io);
+        bindAutoReply(this.socket, this.sessionId);
+
+        this.reconnectCount = 0;
+        this.isStopped = false;
+        this.status = "CONNECTED";
+        this.qr = null;
+        this.startTime = new Date();
+        this.io?.to(this.sessionId).emit("connection.update", { status: "CONNECTED", qr: null });
+        await prisma.session.update({ where: { sessionId: this.sessionId }, data: { status: "CONNECTED", qr: null } });
+        logger.success("Instance", `Cloud session ${this.sessionId} connected as ${info.display_phone_number} (${info.verified_name}, quality ${info.quality_rating || "?"})`);
     }
 
     async handleConnectionUpdate(update: Partial<ConnectionState>) {

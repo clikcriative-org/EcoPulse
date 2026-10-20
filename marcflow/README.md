@@ -10,6 +10,10 @@ Criado por **Marcos Maia** · [@marcolamaia](https://instagram.com/marcolamaia)
 
 ---
 
+## Conexão oficial
+
+Esta versão conecta pela **API oficial do WhatsApp (Cloud API da Meta)**, sem QR code e sem o risco de banimento das conexões não oficiais. A conexão por QR code (Baileys) continua disponível como opção por sessão. Configuração passo a passo: [docs/CLOUD_API.md](docs/CLOUD_API.md).
+
 ## O que o MarcFlow faz
 
 - **Fluxos de conversa:** construtor visual com mensagens, menus, condições, ações, atrasos e etiquetas. Inclui simulador para testar o rascunho sem enviar nada pelo WhatsApp.
@@ -71,6 +75,7 @@ docker compose up -d
 - API completa: [docs/API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md)
 - Referência rápida: [docs/API-QUICK-REFERENCE.md](docs/API-QUICK-REFERENCE.md)
 - Variáveis de ambiente: [docs/ENVIRONMENT_VARIABLES.md](docs/ENVIRONMENT_VARIABLES.md)
+- API oficial da Meta: [docs/CLOUD_API.md](docs/CLOUD_API.md)
 - Swagger UI interativo: `/docs` com o app rodando
 
 ## Licença

@@ -32,13 +32,15 @@ export async function POST(request: NextRequest) {
 
         const body = await request.json();
         const { name, sessionId } = body;
+        // "cloud" (official Meta API, default) or "baileys" (QR code, unofficial: the number can be banned)
+        const provider = body.provider === "baileys" ? "baileys" : "cloud";
 
         if (!name) {
             return NextResponse.json({ status: false, message: "Session name is required", error: "Session name is required" }, { status: 400 });
         }
 
-        // Create session for the authenticated user
-        const session = await waManager.createSession(user.id, name, sessionId);
+        // Create session for the authenticated user; Cloud API credentials are set later with PUT /api/sessions/{id}/cloud
+        const session = await waManager.createSession(user.id, name, sessionId, provider);
         return NextResponse.json({ status: true, message: "Session created successfully", data: session });
     } catch (error) {
         console.error("Create session error:", error);

@@ -25,6 +25,7 @@ type Session = {
     name: string;
     sessionId: string;
     status: string;
+    provider?: string;
     qr?: string | null;
     user?: {
         name: string | null;
@@ -36,6 +37,7 @@ export function SessionManager({ user }: { user: any }) {
     const [sessions, setSessions] = useState<Session[]>([]);
     const [newSessionName, setNewSessionName] = useState("");
     const [newSessionId, setNewSessionId] = useState("");
+    const [newProvider, setNewProvider] = useState<"cloud" | "baileys">("cloud");
     const [loading, setLoading] = useState(false);
     const [socket, setSocket] = useState<Socket | null>(null);
     const router = useRouter();
@@ -101,7 +103,8 @@ export function SessionManager({ user }: { user: any }) {
                 body: JSON.stringify({
                     userId: user.id,
                     name: newSessionName,
-                    sessionId: newSessionId || undefined // Optional, backend will generate if empty
+                    sessionId: newSessionId || undefined, // Optional, backend will generate if empty
+                    provider: newProvider
                 })
             });
             const responseData = await res.json();
@@ -114,8 +117,8 @@ export function SessionManager({ user }: { user: any }) {
             setNewSessionId("");
             toast.success("Sessão criada com sucesso");
 
-            // Optionally redirect immediately or let user choose
-            // router.push(`/dashboard/sessions/${session.sessionId}`);
+            // A Cloud API session is useless until its Meta credentials are filled in on the manage page
+            if (session.provider === "cloud") router.push(`/dashboard/sessions/${session.sessionId}`);
         } catch (e: any) {
             console.error(e);
             toast.error(e.message || "Falha ao criar a sessão");
@@ -141,7 +144,7 @@ export function SessionManager({ user }: { user: any }) {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                         <div className="space-y-2">
                             <Label htmlFor="session-name">Nome da sessão</Label>
                             <Input
@@ -160,6 +163,18 @@ export function SessionManager({ user }: { user: any }) {
                                 placeholder="unique-id-123"
                             />
                             <p className="text-[10px] text-muted-foreground">Somente letras, números e hífens.</p>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="session-provider">Conexão</Label>
+                            <select
+                                id="session-provider"
+                                value={newProvider}
+                                onChange={e => setNewProvider(e.target.value as "cloud" | "baileys")}
+                                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                            >
+                                <option value="cloud">API oficial da Meta (recomendado)</option>
+                                <option value="baileys">QR code (não oficial, risco de banimento)</option>
+                            </select>
                         </div>
                         <Button onClick={createSession} disabled={loading}>
                             {loading ? 'Criando...' : 'Criar sessão'}
@@ -199,7 +214,9 @@ export function SessionManager({ user }: { user: any }) {
                                         <TableRow key={session.id} className="hover:bg-muted/20 dark:hover:bg-muted/5 transition-colors">
                                             <TableCell className="px-5 py-3 font-medium">
                                                 <div className="font-semibold text-slate-800 dark:text-slate-200 text-sm">{session.name}</div>
-                                                <div className="text-[11px] text-muted-foreground font-mono mt-0.5">{session.sessionId}</div>
+                                                <div className="text-[11px] text-muted-foreground font-mono mt-0.5">
+                                                    {session.sessionId} · {session.provider === "baileys" ? "QR code" : "API oficial"}
+                                                </div>
                                             </TableCell>
                                             <TableCell className="py-3">
                                                 <Badge 

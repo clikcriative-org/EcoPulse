@@ -6,6 +6,12 @@ import { startFlowScheduler } from "@/modules/flows/engine";
 import { pauseOrphanedBroadcasts, startBroadcastScheduler } from "@/modules/broadcast/runner";
 import { logger } from "@/lib/logger";
 
+export interface CloudSessionInput {
+    phoneNumberId: string;
+    accessToken: string;
+    wabaId?: string;
+}
+
 export class WhatsAppManager {
     private static instance: WhatsAppManager;
     private sessions: Map<string, WhatsAppInstance> = new Map();
@@ -35,16 +41,16 @@ export class WhatsAppManager {
             where: {
                 status: { not: "LOGGED_OUT" }
             },
-            select: { sessionId: true, userId: true, status: true }
+            select: { sessionId: true, userId: true, status: true, provider: true, cloudCredential: { select: { sessionId: true } } }
         });
 
         let started = 0;
         for (const session of sessions) {
-            // Only auto-init sessions that were CONNECTED before (have auth creds)
-            const authCount = await prisma.authState.count({
-                where: { sessionId: session.sessionId }
-            });
-            if (authCount === 0) {
+            // Only auto-init sessions that were CONNECTED before (have auth creds; for the Cloud API, a token)
+            const hasCreds = session.provider === "cloud"
+                ? !!session.cloudCredential && session.status !== "STOPPED"
+                : (await prisma.authState.count({ where: { sessionId: session.sessionId } })) > 0;
+            if (!hasCreds) {
                 // No credentials — session was created but never connected
                 // Set to STOPPED so it doesn't spam reconnect
                 await prisma.session.update({
@@ -63,7 +69,7 @@ export class WhatsAppManager {
         logger.success("Manager", `Loaded ${started} sessions (${sessions.length - started} idle skipped).`);
     }
 
-    async createSession(userId: string, name: string, customSessionId?: string) {
+    async createSession(userId: string, name: string, customSessionId?: string, provider: "cloud" | "baileys" = "cloud", cloud?: CloudSessionInput) {
         if (!this.io && (global as any).io) {
             this.io = (global as any).io;
         }
@@ -81,6 +87,10 @@ export class WhatsAppManager {
                 name,
                 sessionId,
                 status: "STOPPED", // Default: stopped, user must click Start
+                provider,
+                cloudPhoneNumberId: provider === "cloud" ? cloud?.phoneNumberId : undefined,
+                cloudWabaId: provider === "cloud" ? cloud?.wabaId : undefined,
+                ...(provider === "cloud" && cloud ? { cloudCredential: { create: { accessToken: cloud.accessToken } } } : {}),
                 botConfig: {
                     create: {
                         enabled: true,
