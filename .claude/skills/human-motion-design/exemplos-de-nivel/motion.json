@@ -1,0 +1,395 @@
+{
+  "titulo": "Exemplos de nível",
+  "cartaz": "A dinâmica é a cereja do bolo",
+  "slug": "exemplos-de-nivel",
+  "fps": 60,
+  "bpm": 120,
+  "formatoBase": "16x9",
+  "formatos": [
+    "16x9",
+    "9x16"
+  ],
+  "movimento": {
+    "curvaEntrada": [
+      0.16,
+      1,
+      0.3,
+      1
+    ],
+    "cascataLetra": 0.026,
+    "cascataPalavra": 0.04,
+    "entrada": 0.6,
+    "opacidade": 0.22,
+    "subida": 0.18,
+    "desfoque": 0.14,
+    "saida": 0.24,
+    "camera": 0.012
+  },
+  "linguagem": [
+    {
+      "titulo": "Um eixo só",
+      "texto": "Tudo nasce e termina no centro do quadro. Cada cena entrega para a próxima no mesmo eixo: a marca que tranca no alto vira a frase do bento, a capa do bento vira a primeira capa da órbita."
+    },
+    {
+      "titulo": "Luz que respira",
+      "texto": "Fundo preto profundo com luz sem borda (degradês de queda macia). A luz nasce de um objeto (símbolo, ponto, horizonte) e abre o preto em volta; no hold ela respira e deriva, nunca congela."
+    },
+    {
+      "titulo": "Etapas legíveis",
+      "texto": "Nada aparece inteiro de uma vez e nada se monta todo junto: cada etapa segura legível antes da próxima (acende, segura, abre, tranca)."
+    },
+    {
+      "titulo": "Objeto tem peso, letra não quica",
+      "texto": "Overshoot, mola e quique só em objeto (símbolo, cards, capas). Tipografia vem do desfoque para o foco, com subida curta e curva forte."
+    }
+  ],
+  "cenas": [
+    {
+      "id": "revelacao",
+      "titulo": "Revelação em etapas",
+      "tipo": "marca-em-etapas",
+      "papel": "gancho",
+      "dur": 5,
+      "ideia": "A marca é uma fechadura e a palavra gigante é o que ela guarda: o símbolo acende do preto, a marca aparece inteira e fechada, segura, gira a chave e abre; no fim tranca no alto e o clique solta a luz que acende a palavra gigante.",
+      "camera": "Close na marca fechada com push-in lento; recua junto com a abertura e segue recuando; empurrão de 1,2 % quando a palavra trava.",
+      "quadros": [
+        {
+          "id": "inicio",
+          "rotulo": "Início",
+          "legenda": "A marca inteira, fechada, em close, no escuro",
+          "t": 0.6
+        },
+        {
+          "id": "meio",
+          "rotulo": "Passo 2",
+          "legenda": "A chave gira e a marca se abre: o que ela guarda sai de dentro dela",
+          "t": 2.1
+        },
+        {
+          "id": "fim",
+          "rotulo": "Fim",
+          "legenda": "A marca tranca no alto e a palavra gigante nasce do horizonte de luz",
+          "t": 4.3,
+          "aprovado": true
+        }
+      ],
+      "batidas": [
+        {
+          "t": 0.03,
+          "tipo": "luz",
+          "texto": "O símbolo acende do preto como um ponto que cresce girando 50°; a luz dele abre o preto em volta, sem borda."
+        },
+        {
+          "t": 0.12,
+          "tipo": "tipo",
+          "texto": "Uma frente de luz corre do símbolo para as pontas e cada letra acende quando ela passa: quente, do desfoque, assentando para fora."
+        },
+        {
+          "t": 0.8,
+          "tipo": "objeto",
+          "texto": "Meia volta de chave (240 ms, inOutExpo, o meio vira risco de luz) e a marca abre pelo centro; a câmera recua com ela."
+        },
+        {
+          "t": 1.5,
+          "tipo": "luz",
+          "texto": "Um reflexo sai do símbolo e corre pelo vidro dos itens, uma vez."
+        },
+        {
+          "t": 2.5,
+          "tipo": "tipo",
+          "texto": "A palavra que vai virar gigante brilha e é sugada para dentro do símbolo."
+        },
+        {
+          "t": 3,
+          "tipo": "objeto",
+          "texto": "Tranca na batida: a marca sobe e encolhe; o clique solta uma gota de luz até o horizonte."
+        },
+        {
+          "t": 3.11,
+          "tipo": "luz",
+          "texto": "O horizonte nasce onde a gota cai e corre para as pontas; primeiro o brilho, depois a letra, da esquerda para a direita."
+        },
+        {
+          "t": 3.46,
+          "tipo": "camera",
+          "texto": "Empurrão de 1,2 % quando a palavra trava (peso), devolvido devagar."
+        },
+        {
+          "t": 4.1,
+          "tipo": "vida",
+          "texto": "Um brilho especular atravessa a palavra; o degradê escorre devagar e a luz do chão respira."
+        }
+      ],
+      "saida": {
+        "tipo": "avancar-desfocar",
+        "depois": 0
+      }
+    },
+    {
+      "id": "bento",
+      "titulo": "Bento que acende",
+      "tipo": "montagem",
+      "papel": "desenvolvimento",
+      "dur": 5,
+      "ideia": "A frase nasce no eixo da cena anterior, é sugada para um ponto de luz que estoura no símbolo do card herói; o card abre a partir dele e uma frente de luz atravessa a grade por trás do vidro, acendendo card a card. No fim a câmera mergulha na capa de um card.",
+      "camera": "Push-in de 3 % até o quadro aprovado (paralaxe: símbolo 4,5 %, grade 3 %, luz 1,5 %); recuo de 2,5 % na antecipação; mergulho em log na capa da frente.",
+      "quadros": [
+        {
+          "id": "inicio",
+          "rotulo": "Início",
+          "legenda": "A frase sozinha, o degradê já varrido",
+          "t": 1
+        },
+        {
+          "id": "meio",
+          "rotulo": "Passo 2",
+          "legenda": "O card herói aberto e a frente de luz acendendo a grade",
+          "t": 2.45
+        },
+        {
+          "id": "fim",
+          "rotulo": "Fim",
+          "legenda": "A grade inteira, cada card com o seu conteúdo travado",
+          "t": 4.25,
+          "aprovado": true
+        }
+      ],
+      "batidas": [
+        {
+          "t": 0,
+          "tipo": "tipo",
+          "texto": "A frase sai do desfoque, letra a letra; o degradê varre o destaque."
+        },
+        {
+          "t": 0.3,
+          "tipo": "luz",
+          "texto": "O degradê varre o destaque da frase, da cor do texto para a cor da marca."
+        },
+        {
+          "t": 1,
+          "tipo": "vida",
+          "texto": "A frase segura viva: a luz atrás dela respira e desliza, a câmera empurra devagar."
+        },
+        {
+          "t": 1.5,
+          "tipo": "tipo",
+          "texto": "Batida 3: as pontas partem primeiro e todas as letras chegam juntas a um ponto de luz."
+        },
+        {
+          "t": 1.74,
+          "tipo": "objeto",
+          "texto": "O ponto estoura no símbolo do card herói e o card se abre a partir dele, grande, e assenta."
+        },
+        {
+          "t": 2,
+          "tipo": "luz",
+          "texto": "Batida 4: uma frente de luz sai do símbolo e atravessa a grade por trás do vidro; cada card acende quando ela passa."
+        },
+        {
+          "t": 2.75,
+          "tipo": "objeto",
+          "texto": "Cada conteúdo trava numa batida: a trilha e o número em 2,75; o infinito e a data em 3,0."
+        },
+        {
+          "t": 3.5,
+          "tipo": "vida",
+          "texto": "Hold: as luzes atrás do vidro circulam e respiram, a onda segue ao vivo, o ponto pulsa na batida."
+        },
+        {
+          "t": 4.25,
+          "tipo": "camera",
+          "texto": "Antecipação: a grade recua e escurece, só o card da capa fica aceso; o leque fecha com um clique."
+        },
+        {
+          "t": 4.42,
+          "tipo": "transicao",
+          "texto": "Mergulho na capa da frente até o primeiro quadro da próxima cena."
+        }
+      ],
+      "saida": {
+        "tipo": "na-cena",
+        "texto": "A câmera mergulha na capa da frente do card até ela ficar exatamente como a primeira capa da órbita."
+      }
+    },
+    {
+      "id": "orbita",
+      "titulo": "Pilha que vira órbita",
+      "tipo": "montagem",
+      "papel": "climax",
+      "dur": 4,
+      "ideia": "Uma capa só, grande; as outras caem por cima em accelerando (blub, blub, blub); a pilha prende o ar e explode em espiral até uma órbita que nunca para, com a frase no vazio do centro; a câmera atravessa o anel.",
+      "camera": "Push-in mínimo na pilha; depois da explosão, dolly real através do anel (as capas de baixo, mais perto, crescem mais e saem primeiro).",
+      "quadros": [
+        {
+          "id": "inicio",
+          "rotulo": "Início",
+          "legenda": "Uma capa só, grande, no centro",
+          "t": 0.3
+        },
+        {
+          "id": "meio",
+          "rotulo": "Passo 2",
+          "legenda": "As outras caem por cima e a pilha descansa",
+          "t": 1.42
+        },
+        {
+          "id": "fim",
+          "rotulo": "Fim",
+          "legenda": "A pilha explodiu em órbita; a frase no centro",
+          "t": 2.84,
+          "aprovado": true
+        }
+      ],
+      "batidas": [
+        {
+          "t": 0,
+          "tipo": "objeto",
+          "texto": "A capa chega no embalo do mergulho da cena anterior e assenta sozinha por uma batida."
+        },
+        {
+          "t": 0.62,
+          "tipo": "objeto",
+          "texto": "As outras caem de fora do quadro em accelerando (45 → 17 ms); cada impacto afunda a pilha e ela devolve."
+        },
+        {
+          "t": 1.34,
+          "tipo": "objeto",
+          "texto": "A pilha prende o ar: encolhe 8 % e torce 5° contra o giro."
+        },
+        {
+          "t": 1.5,
+          "tipo": "objeto",
+          "texto": "Batida 3: explode em espiral; a capa de baixo é a última a sair."
+        },
+        {
+          "t": 2,
+          "tipo": "tipo",
+          "texto": "Batida 4: a frase entra no vazio central, palavra a palavra."
+        },
+        {
+          "t": 2.2,
+          "tipo": "luz",
+          "texto": "Um reflexo dá a volta no anel, uma vez."
+        },
+        {
+          "t": 2.84,
+          "tipo": "vida",
+          "texto": "Quadro aprovado em movimento: o anel acelera devagar, a câmera avança, o degradê escorre."
+        },
+        {
+          "t": 3.44,
+          "tipo": "camera",
+          "texto": "A câmera atravessa o anel: a frase passa pela câmera, as capas saem pelas bordas com rastro."
+        },
+        {
+          "t": 3.5,
+          "tipo": "transicao",
+          "texto": "O fundo afunda no preto puro."
+        }
+      ],
+      "saida": {
+        "tipo": "corte",
+        "texto": "Corte seco no preto puro."
+      }
+    },
+    {
+      "id": "fechamento",
+      "titulo": "Fechamento com luz",
+      "tipo": "marca-em-etapas",
+      "papel": "convite",
+      "dur": 5,
+      "ideia": "Um ponto de luz acende a frase sobre um horizonte distante; a câmera chega perto do planeta e a luz nasce símbolo com a mesma meia volta de chave da abertura; a marca sai de dentro dele, o planeta cai, o último fio do aro vira o convite e, no fim, tudo tranca de volta no símbolo, que vira ponto e apaga.",
+      "camera": "Push-in contínuo de 0,6 %/s no plano inteiro; aproximação do planeta (sobe e achata) em 0,7 s com a curva da página.",
+      "quadros": [
+        {
+          "id": "inicio",
+          "rotulo": "Início",
+          "legenda": "A frase sobre um horizonte baixo e distante",
+          "t": 0.9
+        },
+        {
+          "id": "simbolo",
+          "rotulo": "Passo 2",
+          "legenda": "O símbolo no centro, sobre o planeta",
+          "t": 1.68
+        },
+        {
+          "id": "marca",
+          "rotulo": "Passo 3",
+          "legenda": "A marca completa com o planeta",
+          "t": 2.6
+        },
+        {
+          "id": "fim",
+          "rotulo": "Fim",
+          "legenda": "A marca sobe, o planeta sai e o convite nasce do fio de luz",
+          "t": 4.1,
+          "aprovado": true
+        }
+      ],
+      "batidas": [
+        {
+          "t": 0.1,
+          "tipo": "luz",
+          "texto": "O ponto de luz estoura e solta um traço horizontal; a frase entra na ordem de leitura, o miolo acende primeiro."
+        },
+        {
+          "t": 0.6,
+          "tipo": "luz",
+          "texto": "A luz do horizonte sobe atrás da palavra em destaque."
+        },
+        {
+          "t": 1.02,
+          "tipo": "camera",
+          "texto": "A câmera chega perto do planeta; a frase passa pela câmera."
+        },
+        {
+          "t": 1.25,
+          "tipo": "objeto",
+          "texto": "A luz nasce símbolo com meia volta de chave; um brilho corre pelo aro a partir do centro."
+        },
+        {
+          "t": 1.75,
+          "tipo": "objeto",
+          "texto": "O clique: as duas palavras da marca saem de dentro do símbolo."
+        },
+        {
+          "t": 2.74,
+          "tipo": "objeto",
+          "texto": "O planeta cai; a marca sobe; o último fio do aro fica no quadro."
+        },
+        {
+          "t": 3,
+          "tipo": "tipo",
+          "texto": "Na batida, o convite acende do fio para cima; na meia batida, a data cai dele para baixo."
+        },
+        {
+          "t": 3.62,
+          "tipo": "vida",
+          "texto": "Um brilho atravessa a marca e desce pela data; o degradê escorre."
+        },
+        {
+          "t": 4.58,
+          "tipo": "objeto",
+          "texto": "Meia volta tranca a marca de volta no símbolo, que vai ao centro, pulsa, vira ponto e apaga."
+        }
+      ]
+    }
+  ],
+  "capa": {
+    "cena": "revelacao",
+    "quadro": "fim"
+  },
+  "versoes": [
+    {
+      "v": 1,
+      "data": "2026-10-07",
+      "formatos": [
+        "16x9",
+        "9x16"
+      ],
+      "fps": 30,
+      "nota": "Quatro cenas de nível portadas do filme de referência, 16:9 e 9:16"
+    }
+  ]
+}

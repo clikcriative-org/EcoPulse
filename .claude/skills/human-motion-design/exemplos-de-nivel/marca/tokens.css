@@ -1,0 +1,69 @@
+/* marca/tokens.css — a marca de DEMONSTRAÇÃO dos exemplos de nível.
+   Nenhuma cena escreve cor, fonte ou raio: tudo sai daqui. Para ver os exemplos com outra marca,
+   troque só este arquivo (e marca/ativos/simbolo.svg, marca/fontes/). A composição, a luz, os
+   tempos e a câmera continuam iguais; muda a marca.
+
+   A paleta de demonstração é "aurora verde": preto profundo, luz de jade e um degradê de destaque
+   que vai do gelo ao jade. Ela existe só para provar que o nível vem do desenho e do movimento,
+   não de uma cor. Regras que valem para qualquer marca que preencher estes tokens:
+   - um único destaque (o degradê) no filme todo; título em peso regular, impacto pelo tamanho;
+   - luz sempre sem borda: --luz-* entram em degradês de queda macia, nunca em anéis;
+   - o fundo é escuro de verdade (os vidros e as luzes precisam de preto para brilhar);
+   - transparência só com color-mix(in srgb, var(--token) N%, transparent). */
+
+/* Fontes (OFL): Inter Display para títulos, Inter para o resto. Troque pelos arquivos da marca. */
+@font-face { font-family: "Inter Display"; src: url("fontes/InterDisplay-ExtraLight.otf") format("opentype"); font-weight: 200; font-style: normal; font-display: block; }
+@font-face { font-family: "Inter Display"; src: url("fontes/InterDisplay-Light.otf") format("opentype"); font-weight: 300; font-style: normal; font-display: block; }
+@font-face { font-family: "Inter Display"; src: url("fontes/InterDisplay-Regular.otf") format("opentype"); font-weight: 400; font-style: normal; font-display: block; }
+@font-face { font-family: "Inter Display"; src: url("fontes/InterDisplay-SemiBold.otf") format("opentype"); font-weight: 600; font-style: normal; font-display: block; }
+@font-face { font-family: "Inter"; src: url("fontes/Inter-Regular.otf") format("opentype"); font-weight: 400; font-style: normal; font-display: block; }
+@font-face { font-family: "Inter"; src: url("fontes/Inter-Medium.otf") format("opentype"); font-weight: 500; font-style: normal; font-display: block; }
+
+:root {
+  /* ── cores de base ── */
+  --fundo: #020504;            /* preto da marca (os planos de luz partem dele) */
+  --texto: #edf5f1;            /* letra principal */
+  --texto-suave: #8fa39c;      /* legendas, datas, rótulos */
+  --destaque: #7fd6b6;         /* a cor única de destaque, sólida (ponto ao vivo, traços finos) */
+  --destaque-grad: linear-gradient(100deg, #f3faf6 6%, #c9f0df 28%, #86d9bb 54%, #43b39f 76%, #2c8f97 100%);
+  --destaque-grad-vertical: linear-gradient(180deg, #f3faf6 0%, #c9f0df 25%, #43b39f 70%, #2c8f97 100%);
+  --brilho: #dff6ec;           /* a luz mais clara (gelo): núcleo de luz, reflexos, fios */
+
+  /* ── luzes (sempre em degradê sem borda) ── */
+  --luz-1: #1d6858;            /* principal: chão, horizonte, núcleo */
+  --luz-2: #0f3440;            /* fria e funda */
+  --luz-3: #3a9e86;            /* viva: o card herói, a frente de luz */
+  --luz-4: #5c7f74;            /* neutra, acinzentada: luz de fundo do bento */
+
+  /* ── materiais ── */
+  --vidro: linear-gradient(color-mix(in srgb, #08100e 62%, transparent), color-mix(in srgb, #040807 74%, transparent));
+  --vidro-reflexo: linear-gradient(158deg, color-mix(in srgb, #ffffff 9%, transparent) 0%, color-mix(in srgb, #ffffff 2%, transparent) 28%, transparent 46%);
+  --vidro-borda: linear-gradient(145deg, color-mix(in srgb, var(--brilho) 36%, transparent), color-mix(in srgb, var(--brilho) 7%, transparent) 36%, color-mix(in srgb, var(--brilho) 4%, transparent) 64%, color-mix(in srgb, var(--destaque) 30%, transparent));
+  /* o card protagonista: a cor de destaque como superfície, luz de cima para baixo */
+  --cartao-forte: radial-gradient(ellipse 95% 85% at 85% 0%, #bff0dc 0%, #4fb59c 32%, #1d5f5a 68%, #0a2426 100%);
+  --cartao-heroi: radial-gradient(ellipse 85% 70% at 50% 38%, #3a9e86 0%, #1d6858 26%, #0f3440 58%, #050c0b 100%);
+  --linha: color-mix(in srgb, var(--texto) 16%, transparent);
+  /* cores das CAPAS DE DEMONSTRAÇÃO (só os placeholders de imagem usam): capas são conteúdo, como
+     fotos, e trazem cor própria. Com fotos em midia/ estes tokens não aparecem. */
+  --capa-1: #ff8a5c;
+  --capa-2: #f2c46d;
+  --capa-3: #5fd4a8;
+  --capa-4: #6aa8ff;
+  --capa-5: #b48cff;
+  --capa-6: #ff6fa8;
+
+  /* ── tipografia ── */
+  --fonte-titulo: "Inter Display", "Inter", system-ui, sans-serif;
+  --fonte-texto: "Inter", system-ui, sans-serif;
+  --fonte-marca: "Inter Display", "Inter", system-ui, sans-serif;  /* a palavra forte da marca */
+  --marca-a-peso: 200;                            /* a palavra leve da marca (antes do símbolo) */
+  --marca-b-peso: 600;                            /* a palavra forte da marca (depois do símbolo):
+                                                     o contraste fino × forte é o desenho da marca */
+  --titulo-peso: 400;
+  --titulo-tracking: -0.045em;
+  --titulo-entrelinha: 1.04;
+
+  /* ── forma ── */
+  --raio: 1.6cqw;
+  --raio-capa: 0.5cqw;
+}

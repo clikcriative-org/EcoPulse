@@ -1,0 +1,13 @@
+{
+  "name": "human-motion-design",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Motor e scripts da skill Human Motion Design: storyboard, render determinístico 16:9 e 9:16, fluidez, leitura de referência e página de entrega.",
+  "engines": {
+    "node": ">=18.17"
+  },
+  "dependencies": {
+    "playwright-core": "^1.48.0"
+  }
+}

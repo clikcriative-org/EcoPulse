@@ -1,0 +1,42 @@
+/* marca/tokens.css — a identidade da marca em tokens. É a ÚNICA fonte de cor, fonte e raio das
+   cenas: as cenas só usam var(--…). Troque estes valores neutros pelos da marca da pessoa (lidos
+   do design system, do site, do Figma, do repositório ou das imagens que ela trouxe).
+
+   Regras de gosto que valem para qualquer marca:
+   - um único destaque (cor ou degradê) no filme todo; título em peso regular, impacto pelo
+     tamanho e pelo tracking;
+   - luz sem borda (--luz-1..3 entram em degradês de queda macia, nunca em anéis);
+   - cor com transparência só com color-mix(in srgb, var(--token) N%, transparent).
+
+   Fontes: copie os arquivos para marca/fontes/ e declare cada peso com @font-face (o motor
+   embute no filme; sem rede). Sem @font-face, o filme usa a fonte do sistema e pode mudar de
+   máquina para máquina. Exemplo:
+   @font-face { font-family: "Marca Sans"; src: url("fontes/MarcaSans-Regular.woff2") format("woff2");
+                font-weight: 400; font-style: normal; font-display: block; } */
+
+:root {
+  /* cores */
+  --fundo: #0e0f11;
+  --texto: #f2f2f0;
+  --texto-suave: #9c9fa6;
+  --destaque: #e6e6e1;
+  --destaque-grad: linear-gradient(100deg, #ffffff 0%, #c4c7cd 100%);
+  --luz-1: #3b3e45;
+  --luz-2: #25272c;
+  --luz-3: #4b4e56;
+  --brilho: #ffffff;
+  --linha: color-mix(in srgb, var(--texto) 16%, transparent);
+
+  /* tipografia */
+  --fonte-titulo: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --fonte-texto: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --titulo-peso: 400;
+  --titulo-tracking: -0.03em;
+  --titulo-entrelinha: 1.02;
+
+  /* forma */
+  --raio: 2cqmin;
+  --mockup-moldura: #0c0d0f;
+  --mockup-raio: 3.4cqmin;
+  --mockup-sombra: #000000;
+}

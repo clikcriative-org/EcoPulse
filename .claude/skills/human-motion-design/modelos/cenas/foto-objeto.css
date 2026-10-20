@@ -1,0 +1,27 @@
+/* {{id}} — Foto como objeto. O CSS natural é o quadro aprovado: a foto em plano cheio (sangrando 6 %). */
+.cena-{{id}} { --luz-a-x: 50%; --luz-a-y: 46%; --luz-b-x: 36%; --luz-b-y: 66%; }
+.cena-{{id}} .cartao .m-foto { object-fit: cover; }
+/* a sombra do card enquanto ele é objeto (some quando ele vira plano) */
+.cena-{{id}} .sombra-cartao {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 46cqmin;
+  height: 57.5cqmin;
+  translate: -50% -46%;
+  border-radius: 3cqmin;
+  background: color-mix(in srgb, #000 60%, transparent);
+  filter: blur(4cqmin);
+  opacity: 0;
+}
+.cena-{{id}} .veu {
+  background: linear-gradient(0deg,
+    color-mix(in srgb, var(--fundo) 78%, transparent) 0%,
+    color-mix(in srgb, var(--fundo) 40%, transparent) 26%,
+    transparent 52%);
+}
+.cena-{{id}} .bloco-texto { position: absolute; left: 8cqw; right: 8cqw; bottom: 11cqh; text-align: center; }
+.cena-{{id}} .frase { font-size: 12cqmin; text-wrap: balance; }
+[data-formato="9x16"] .cena-{{id}} .sombra-cartao { width: 64cqmin; height: 80cqmin; }
+[data-formato="9x16"] .cena-{{id}} .bloco-texto { bottom: 24cqh; }
+[data-formato="9x16"] .cena-{{id}} .frase { font-size: 12cqmin; }

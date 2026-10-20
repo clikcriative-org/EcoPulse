@@ -1,0 +1,24 @@
+/* {{id}} — Frase. Estilos SEMPRE escopados em .cena-{{id}}. O CSS natural é o quadro aprovado.
+   Tipografia em cqmin (mesmo tamanho em px nos dois formatos); posições em cqw/cqh. */
+.cena-{{id}} { --luz-a-x: 38%; --luz-a-y: 44%; --luz-b-x: 66%; --luz-b-y: 60%; }
+.cena-{{id}} .frase {
+  font-size: 14.5cqmin;
+  max-width: 82cqw;
+  text-wrap: balance;
+}
+/* o eco: a palavra de destaque gigante, desfocada, perto da câmera (a cor fraca, nunca opacity) */
+.cena-{{id}} .eco {
+  position: absolute;
+  right: -6cqw;
+  bottom: -9cqmin;
+  font-family: var(--fonte-titulo);
+  font-weight: var(--titulo-peso, 400);
+  font-size: 52cqmin;
+  line-height: 1;
+  letter-spacing: var(--titulo-tracking);
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--texto) 7%, transparent);
+  filter: blur(1.1cqmin);
+}
+[data-formato="9x16"] .cena-{{id}} .frase { font-size: 14cqmin; max-width: 84cqw; }
+[data-formato="9x16"] .cena-{{id}} .eco { right: -30cqw; bottom: 16cqh; font-size: 60cqmin; }

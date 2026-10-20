@@ -1,0 +1,309 @@
+/* base.css — o palco, os invólucros do motor e utilitários neutros.
+   Nenhuma cor própria: tudo vem de var(--…) da marca da pessoa (marca/tokens.css), com
+   recuos neutros só para nada quebrar se um token faltar.
+
+   Tokens que a marca preenche (obrigatórios): --fundo --texto --texto-suave --destaque
+   --destaque-grad --luz-1 --luz-2 --luz-3 --fonte-titulo --fonte-texto --titulo-peso
+   --titulo-tracking --titulo-entrelinha --raio
+   Opcionais: --acao --acao-tinta --linha --vidro --vidro-borda --brilho --mockup-moldura
+   --mockup-raio --mockup-sombra
+
+   Unidades: tipografia em cqmin (o mesmo tamanho em px no 16:9 e no 9:16), posições em cqw/cqh.
+   Para recompor o 9:16, escreva regras em [data-formato="9x16"] .cena-<id> … */
+
+html, body { margin: 0; padding: 0; }
+body { background: var(--fundo, #0b0b0c); overflow: hidden; }
+
+#palco {
+  position: relative;
+  overflow: hidden;
+  container-type: size;
+  background: var(--fundo, #0b0b0c);
+  color: var(--texto, #f2f2f2);
+  font-family: var(--fonte-texto, system-ui, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+  font-kerning: normal;
+  transform-origin: 0 0;
+}
+#palco *, #palco *::before, #palco *::after {
+  box-sizing: border-box;
+  transition: none !important;
+  caret-color: transparent;
+}
+
+/* ─── invólucros do motor ─── */
+.m-cena {
+  position: absolute;
+  inset: 0;
+  display: none;
+  overflow: hidden;
+  background: var(--fundo-cena, var(--fundo, #0b0b0c));
+  isolation: isolate;
+}
+.m-cena.m-ativa, #palco.m-medindo .m-cena { display: block; }
+.m-camera, .m-conteudo {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 50%;
+}
+.m-sobre {
+  position: absolute;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+}
+/* Fundo puro (para blend na edição): a cor exata em todos os quadros, sem luz, grão nem vinheta. */
+.m-cena.m-fundo-puro { background: var(--fundo, #000); }
+.m-cena.m-fundo-puro .luz, .m-cena.m-fundo-puro .vinheta { display: none !important; }
+
+/* ─── utilitários de composição ─── */
+.camada { position: absolute; inset: 0; }
+/* Plano cheio (foto, véu, degradê, textura de fundo): nasce com sobra de 6 % em cada borda.
+   A câmera viva passa por escala < 1 antes do quadro aprovado; sem a sobra, a borda aparece. */
+.plano { position: absolute; inset: calc(var(--sangria, 6%) * -1); }
+.plano > .m-foto, .plano > .m-video, .plano > img { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* Véu de contraste por cima da foto (também sangrado). A cena escolhe o degradê. */
+.veu { position: absolute; inset: calc(var(--sangria, 6%) * -1); pointer-events: none; }
+.pilha {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.titulo {
+  margin: 0;
+  font-family: var(--fonte-titulo, var(--fonte-texto, system-ui, sans-serif));
+  font-weight: var(--titulo-peso, 400);
+  letter-spacing: var(--titulo-tracking, -0.02em);
+  line-height: var(--titulo-entrelinha, 1.02);
+  color: var(--texto, #f2f2f2);
+}
+.apoio {
+  margin: 0;
+  font-family: var(--fonte-texto, system-ui, sans-serif);
+  color: var(--texto-suave, #a6a6a6);
+}
+.destaque {
+  background-image: var(--destaque-grad, linear-gradient(90deg, var(--destaque, #fff), var(--destaque, #fff)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  padding-block: 0.1em;
+  margin-block: -0.1em;
+}
+.m-destaque-dividido { padding-block: 0; margin-block: 0; }
+
+/* Luz de fundo sem borda: duas fontes macias que a cena pode mover/respirar. Cada cena pode pôr as
+   fontes em outro lugar (--luz-a-x/y, --luz-b-x/y, em % da caixa da luz, que sangra 25 %): variar a
+   luz entre as cenas é o que impede o filme de parecer a mesma vinheta repetida. */
+.luz {
+  position: absolute;
+  inset: -25%;
+  pointer-events: none;
+  background:
+    radial-gradient(closest-side at var(--luz-a-x, 32%) var(--luz-a-y, 40%),
+      color-mix(in srgb, var(--luz-1, #444) 55%, transparent) 0%,
+      color-mix(in srgb, var(--luz-1, #444) 41%, transparent) 18%,
+      color-mix(in srgb, var(--luz-1, #444) 25%, transparent) 36%,
+      color-mix(in srgb, var(--luz-1, #444) 12%, transparent) 54%,
+      color-mix(in srgb, var(--luz-1, #444) 4%, transparent) 72%,
+      color-mix(in srgb, var(--luz-1, #444) 0.6%, transparent) 88%,
+      transparent 100%),
+    radial-gradient(closest-side at var(--luz-b-x, 70%) var(--luz-b-y, 64%),
+      color-mix(in srgb, var(--luz-2, #333) 45%, transparent) 0%,
+      color-mix(in srgb, var(--luz-2, #333) 33%, transparent) 18%,
+      color-mix(in srgb, var(--luz-2, #333) 20%, transparent) 36%,
+      color-mix(in srgb, var(--luz-2, #333) 9%, transparent) 54%,
+      color-mix(in srgb, var(--luz-2, #333) 3%, transparent) 72%,
+      color-mix(in srgb, var(--luz-2, #333) 0.4%, transparent) 88%,
+      transparent 100%);
+}
+
+/* ─── texto dividido ─── */
+.m-palavra { white-space: nowrap; }
+.m-letra, .m-bloco {
+  display: inline-block;
+  white-space: pre;
+  padding-block: 0.1em;
+  margin-block: -0.1em;
+  transform-origin: 50% 62%;
+}
+.m-linha { display: block; }
+.m-linha-in { display: inline-block; transform-origin: 50% 60%; }
+.m-linha.m-mascara { overflow: clip; padding-block: 0.16em; margin-block: -0.16em; }
+
+/* Brilho que atravessa a palavra: cópia do glifo somada (plus-lighter), vista por uma faixa. */
+.m-brilho { position: relative; }
+.m-brilho::after {
+  content: attr(data-m-ch);
+  position: absolute;
+  inset: -0.3em -0.2em;
+  padding: 0.4em 0.2em 0.3em;
+  white-space: pre;
+  pointer-events: none;
+  background: none;
+  color: var(--m-brilho-tinta, rgba(255, 255, 255, 0.5));
+  -webkit-text-fill-color: var(--m-brilho-tinta, rgba(255, 255, 255, 0.5));
+  mix-blend-mode: plus-lighter;
+  --m-faixa: linear-gradient(var(--m-brilho-angulo, 104deg),
+    transparent calc(50% - var(--m-brilho-meia, 1cqw)),
+    rgba(0, 0, 0, 0.1) calc(50% - var(--m-brilho-meia, 1cqw) * 0.86),
+    rgba(0, 0, 0, 0.5) calc(50% - var(--m-brilho-meia, 1cqw) * 0.72),
+    rgba(0, 0, 0, 0.9) calc(50% - var(--m-brilho-meia, 1cqw) * 0.58),
+    #000 calc(50% - var(--m-brilho-nucleo, 0.75cqw)),
+    #000 calc(50% + var(--m-brilho-nucleo, 0.75cqw)),
+    rgba(0, 0, 0, 0.9) calc(50% + var(--m-brilho-meia, 1cqw) * 0.58),
+    rgba(0, 0, 0, 0.5) calc(50% + var(--m-brilho-meia, 1cqw) * 0.72),
+    rgba(0, 0, 0, 0.1) calc(50% + var(--m-brilho-meia, 1cqw) * 0.86),
+    transparent calc(50% + var(--m-brilho-meia, 1cqw)));
+  -webkit-mask-image: var(--m-faixa);
+  mask-image: var(--m-faixa);
+  -webkit-mask-size: var(--m-brilho-caixa, 8cqw) 100%;
+  mask-size: var(--m-brilho-caixa, 8cqw) 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: var(--m-brilho-x, -400cqw) 0;
+  mask-position: var(--m-brilho-x, -400cqw) 0;
+}
+
+.m-cursor {
+  display: inline-block;
+  width: 0.08em;
+  height: 1em;
+  margin-left: 0.04em;
+  vertical-align: -0.12em;
+  background: currentColor;
+}
+.numero { font-variant-numeric: tabular-nums; }
+
+/* ─── mídia ─── */
+.m-foto { display: block; width: 100%; height: 100%; object-fit: cover; user-select: none; }
+.m-svg { display: block; width: 100%; height: auto; overflow: visible; }
+/* c.svg(nome, { viewBox }) ou { so: '.simbolo' }: só o recorte aparece, nada vaza da caixa */
+.m-svg.m-recorte { overflow: hidden; }
+.m-faltando {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 4cqmin;
+  outline: 0.3cqmin dashed color-mix(in srgb, var(--texto, #fff) 40%, transparent);
+  color: var(--texto-suave, #999);
+  font: 1.6cqmin/1.2 system-ui, sans-serif;
+}
+
+/* ─── mockups (aparelhos em CSS; a tela é qualquer HTML) ─── */
+.m-mockup {
+  position: relative;
+  --m-moldura: var(--mockup-moldura, #0d0e10);
+  --m-raio: var(--mockup-raio, 3.4cqmin);
+  --m-sombra-cor: var(--mockup-sombra, #000);
+  transform-origin: 50% 50%;
+}
+.m-mockup-corpo {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--m-moldura);
+  border-radius: var(--m-raio);
+  box-shadow:
+    var(--m-sombra-x, 0cqw) var(--m-sombra-y, 1.2cqw) 4.5cqw color-mix(in srgb, var(--m-sombra-cor) 42%, transparent),
+    var(--m-sombra-x, 0cqw) calc(var(--m-sombra-y, 1.2cqw) * 0.3) 1.2cqw color-mix(in srgb, var(--m-sombra-cor) 30%, transparent),
+    inset 0 0 0 0.12cqmin color-mix(in srgb, #fff 9%, transparent);
+}
+.m-mockup-tela {
+  position: absolute;
+  overflow: hidden;
+  background: var(--fundo, #000);
+}
+.m-mockup-reflexo {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(115deg,
+    transparent calc(var(--m-reflexo, 30%) - 22%),
+    color-mix(in srgb, #fff 3%, transparent) calc(var(--m-reflexo, 30%) - 10%),
+    color-mix(in srgb, #fff 8%, transparent) var(--m-reflexo, 30%),
+    color-mix(in srgb, #fff 3%, transparent) calc(var(--m-reflexo, 30%) + 10%),
+    transparent calc(var(--m-reflexo, 30%) + 22%));
+  mix-blend-mode: plus-lighter;
+}
+.m-celular { width: 30cqmin; aspect-ratio: 9 / 19.5; }
+.m-celular .m-mockup-tela { inset: 1.1cqmin; border-radius: calc(var(--m-raio) - 1cqmin); }
+.m-celular .m-mockup-ilha {
+  position: absolute;
+  top: 2.2cqmin;
+  left: 50%;
+  width: 26%;
+  height: 2.6%;
+  translate: -50% 0;
+  border-radius: 9cqmin;
+  background: var(--m-moldura);
+}
+.m-tablet { width: 56cqmin; aspect-ratio: 3 / 4; }
+.m-tablet .m-mockup-tela { inset: 2cqmin; border-radius: calc(var(--m-raio) - 1.6cqmin); }
+.m-notebook { width: 92cqmin; }
+.m-notebook .m-mockup-corpo { aspect-ratio: 16 / 10.2; height: auto; border-radius: 2.2cqmin 2.2cqmin 0.6cqmin 0.6cqmin; }
+.m-notebook .m-mockup-tela { inset: 2.2cqmin 2.2cqmin 3.2cqmin; border-radius: 0.6cqmin; }
+.m-notebook .m-mockup-base {
+  position: relative;
+  width: 112%;
+  margin-left: -6%;
+  height: 2.4cqmin;
+  border-radius: 0 0 2.4cqmin 2.4cqmin;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--m-moldura) 80%, #fff) 0%, var(--m-moldura) 70%);
+}
+.m-navegador, .m-janela { width: 100cqmin; aspect-ratio: 16 / 10.4; }
+.m-navegador .m-mockup-corpo, .m-janela .m-mockup-corpo { border-radius: 1.6cqmin; overflow: hidden; }
+.m-navegador .m-mockup-barra, .m-janela .m-mockup-barra {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4.2cqmin;
+  display: flex;
+  align-items: center;
+  gap: 0.9cqmin;
+  padding-left: 1.8cqmin;
+}
+.m-navegador .m-mockup-barra i {
+  width: 1.1cqmin;
+  height: 1.1cqmin;
+  border-radius: 50%;
+  background: color-mix(in srgb, #fff 18%, transparent);
+}
+.m-navegador .m-mockup-tela, .m-janela .m-mockup-tela { inset: 4.2cqmin 0 0; }
+.m-cartao { width: 40cqmin; aspect-ratio: 4 / 5; }
+.m-cartao .m-mockup-tela { inset: 0; border-radius: var(--m-raio); }
+
+/* ─── conferência de contraste (o storyboard esconde os textos para medir o fundo) ─── */
+.m-sem-texto [data-m-medido] { visibility: hidden !important; }
+
+/* ─── área segura (o player e a inspeção desenham por cima) ─── */
+.m-seguro {
+  position: absolute;
+  z-index: 2000;
+  pointer-events: none;
+  outline: 2px dashed rgba(255, 64, 64, 0.85);
+  outline-offset: -1px;
+}
+
+/* ─── erros na prévia ─── */
+#m-erros {
+  position: fixed;
+  left: 12px;
+  top: 12px;
+  z-index: 9999;
+  max-width: min(560px, calc(100vw - 24px));
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font: 12px/1.4 ui-monospace, Menlo, Consolas, monospace;
+}
+#m-erros:empty { display: none; }
+#m-erros > div { padding: 8px 10px; border-radius: 8px; background: #b3261e; color: #fff; }
+html.m-captura #m-erros { display: none; }

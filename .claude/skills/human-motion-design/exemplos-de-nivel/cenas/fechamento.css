@@ -1,0 +1,164 @@
+/* fechamento — Fechamento com luz. O CSS natural é o quadro aprovado: a marca no alto, o convite
+   e a data, sem o planeta (ele já caiu). As outras etapas (frase sobre o horizonte, símbolo sobre
+   o planeta, marca com o planeta) saem do quadro(t). Composição pela largura do 16:9 (cqw). */
+.cena-fechamento {
+  --fc-frase: 7.2cqw;
+  --fc-simbolo: 9cqw;
+  --fc-selo: 7.4cqw;      /* corpo das palavras da marca no convite */
+  --fc-cta: 3cqw;
+  --fc-rotulo: 1.15cqw;
+  --hz: 108%;
+  --hw: 230cqw;
+}
+.cena-fechamento .camada { position: absolute; inset: 0; pointer-events: none; }
+.cena-fechamento .orbe {
+  background: radial-gradient(ellipse 58% 54% at 50% 56%,
+    color-mix(in srgb, var(--luz-3) 32%, transparent) 0%,
+    color-mix(in srgb, color-mix(in srgb, var(--luz-3) 70%, var(--luz-1)) 31.8%, transparent) 16%,
+    color-mix(in srgb, color-mix(in srgb, var(--luz-3) 40%, var(--luz-1)) 28.7%, transparent) 31%,
+    color-mix(in srgb, var(--luz-1) 20.9%, transparent) 46%,
+    color-mix(in srgb, var(--luz-1) 11.1%, transparent) 62%,
+    color-mix(in srgb, var(--luz-1) 3.3%, transparent) 77%,
+    color-mix(in srgb, var(--luz-1) 0.2%, transparent) 92%,
+    transparent 100%);
+}
+/* o planeta: um disco enorme com aro de luz (só tokens) */
+.cena-fechamento .planeta {
+  position: absolute;
+  left: 50%;
+  top: var(--hz);
+  width: var(--hw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse 34% 8% at 50% 0%, color-mix(in srgb, var(--brilho) 60%, transparent), transparent 70%),
+    linear-gradient(180deg, var(--luz-1) 0%, color-mix(in srgb, var(--luz-2) 60%, var(--fundo)) 4%, color-mix(in srgb, var(--luz-2) 15%, var(--fundo)) 14%);
+  box-shadow:
+    0 -0.12cqw 0.35cqw color-mix(in srgb, var(--brilho) 85%, transparent),
+    0 -0.8cqw 2cqw color-mix(in srgb, var(--brilho) 45%, transparent),
+    0 -2.4cqw 7cqw color-mix(in srgb, var(--destaque) 40%, transparent),
+    0 -6cqw 16cqw color-mix(in srgb, var(--luz-1) 45%, transparent);
+  transform: translateX(-50%);
+}
+/* amanhecer: um anel fino sobre o aro; a máscara deixa passar só dois brilhos que correm */
+.cena-fechamento .amanhecer {
+  position: absolute;
+  inset: -0.6cqw;
+  border-radius: 50%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0;
+  background: radial-gradient(circle closest-side, transparent calc(100% - 1.5cqw), color-mix(in srgb, var(--brilho) 40%, transparent) calc(100% - 0.95cqw), color-mix(in srgb, var(--texto) 95%, transparent) calc(100% - 0.62cqw), color-mix(in srgb, var(--destaque) 35%, transparent) calc(100% - 0.3cqw), transparent 100%);
+}
+/* atmosfera: uma faixa de luz logo acima do aro que respira; a máscara concentra o brilho */
+.cena-fechamento .ar {
+  position: absolute;
+  inset: -5cqw;
+  border-radius: 50%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0;
+  background: radial-gradient(circle closest-side, transparent calc(100% - 5.7cqw), color-mix(in srgb, var(--brilho) 30%, transparent) calc(100% - 5cqw), color-mix(in srgb, var(--destaque) 18%, transparent) calc(100% - 3.4cqw), transparent 100%);
+}
+.cena-fechamento .vinheta {
+  z-index: 20;
+  background: radial-gradient(ellipse 85% 80% at 50% 50%,
+    transparent 30%,
+    color-mix(in srgb, var(--fundo) 4.2%, transparent) 44%,
+    color-mix(in srgb, var(--fundo) 22.9%, transparent) 58%,
+    color-mix(in srgb, var(--fundo) 49.1%, transparent) 72%,
+    color-mix(in srgb, var(--fundo) 67.8%, transparent) 86%,
+    color-mix(in srgb, var(--fundo) 72%, transparent) 100%);
+}
+
+/* a frase (some no quadro aprovado) */
+.cena-fechamento .linha-frase { z-index: 5; opacity: 0; }
+.cena-fechamento .frase { font-size: var(--fc-frase); white-space: nowrap; }
+
+/* o símbolo sozinho */
+.cena-fechamento .simbolo-solo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 6;
+  width: var(--fc-simbolo);
+  aspect-ratio: 1;
+  color: var(--texto);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+}
+.cena-fechamento .simbolo-solo svg { display: block; width: 100%; height: 100%; }
+
+/* a luz: o ponto que abre e fecha a cena, o traço que ele solta e o fio de onde nasce o convite */
+.cena-fechamento .luz-ponto { position: absolute; left: 50%; top: 50%; width: 0; height: 0; z-index: 8; mix-blend-mode: screen; pointer-events: none; }
+.cena-fechamento .luz-halo { position: absolute; left: 0; top: 0; width: 20cqw; aspect-ratio: 1; border-radius: 50%; opacity: 0; transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--brilho) 20%, transparent), color-mix(in srgb, var(--luz-1) 26%, transparent) 46%, color-mix(in srgb, var(--luz-1) 8%, transparent) 75%, transparent 100%); }
+.cena-fechamento .luz-nucleo { position: absolute; left: 0; top: 0; width: 0.8cqw; aspect-ratio: 1; border-radius: 50%; background: var(--texto); box-shadow: 0 0 1.2cqw 0.25cqw color-mix(in srgb, var(--destaque) 60%, transparent); opacity: 0; transform: translate(-50%, -50%); }
+.cena-fechamento .luz-traco { position: absolute; left: 50%; top: 50%; width: 84cqw; height: 1.1cqw; z-index: 8; pointer-events: none; mix-blend-mode: screen; opacity: 0; transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, var(--texto) 0, color-mix(in srgb, var(--brilho) 62%, transparent) 16%, color-mix(in srgb, var(--destaque) 24%, transparent) 42%, transparent 70%); }
+.cena-fechamento .fio { position: absolute; left: 0; right: 0; top: 50%; height: 2.4cqw; margin-top: -1.2cqw; z-index: 4; pointer-events: none; mix-blend-mode: screen; opacity: 0;
+  background:
+    radial-gradient(closest-side, color-mix(in srgb, var(--texto) 95%, transparent), color-mix(in srgb, var(--brilho) 40%, transparent) 45%, transparent) center / 100% 8% no-repeat,
+    radial-gradient(closest-side, color-mix(in srgb, var(--luz-3) 42%, transparent), transparent) center / 62% 100% no-repeat; }
+
+/* o convite: a marca, a chamada e a data */
+.cena-fechamento .convite { z-index: 7; }
+.cena-fechamento .selo { position: relative; display: flex; align-items: center; color: var(--texto); }
+.cena-fechamento .selo-janela {
+  position: relative;
+  display: block;
+  /* folga invisível para o desfoque não ser cortado pela máscara (que recorta na caixa) */
+  padding-block: 0.3em;
+  margin-block: -0.3em;
+}
+.cena-fechamento .selo-a { padding-left: 0.4em; margin-left: -0.4em; }
+.cena-fechamento .selo-b { padding-right: 0.4em; margin-right: -0.4em; }
+.cena-fechamento .selo-palavra { display: block; font-size: var(--fc-selo); line-height: 1.1; white-space: nowrap; }
+.cena-fechamento .pa { font-family: var(--fonte-titulo); font-weight: var(--marca-a-peso, 400); letter-spacing: -0.035em; }
+.cena-fechamento .pb { font-family: var(--fonte-marca); font-weight: var(--marca-b-peso, 500); font-size: calc(var(--fc-selo) * 0.88); letter-spacing: -0.01em; }
+.cena-fechamento .selo-simbolo { position: relative; z-index: 2; display: block; width: calc(var(--fc-selo) * 1.15); height: calc(var(--fc-selo) * 1.15); margin-inline: calc(var(--fc-selo) * -0.06); }
+.cena-fechamento .selo-simbolo svg { display: block; width: 100%; height: 100%; }
+/* o brilho que atravessa a marca uma vez: uma cópia clara, por uma faixa que anda */
+.cena-fechamento .selo-brilho { position: absolute; inset: 0; display: flex; align-items: center; color: var(--brilho); pointer-events: none; mix-blend-mode: plus-lighter; opacity: 0; filter: blur(0.12cqw) drop-shadow(0 0 0.6cqw color-mix(in srgb, var(--brilho) 60%, transparent)); }
+.cena-fechamento .selo-brilho .selo-janela { padding: 0; margin: 0; }
+.cena-fechamento .cta { margin: 3.2cqw 0 0; font-family: var(--fonte-titulo); font-size: var(--fc-cta); line-height: 1.1; letter-spacing: var(--titulo-tracking); white-space: nowrap; }
+.cena-fechamento .rotulo { margin: 1.1cqw 0 0; font-family: var(--fonte-texto); font-size: var(--fc-rotulo); letter-spacing: 0.14em; text-transform: uppercase; color: var(--texto-suave); white-space: nowrap; }
+.cena-fechamento .data { -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+/* ── 9:16 (em pé): a frase em três linhas, grande no centro; símbolo, marca, convite e data em
+   coluna no eixo, no tamanho do quadro em pé. A luz e o fio crescem junto. ── */
+[data-formato="9x16"] .cena-fechamento {
+  --fc-frase: calc(7.2cqw * 1.72);
+  --fc-simbolo: calc(9cqw * 1.75);
+  --fc-selo: calc(7.4cqw * 1.64);
+  --fc-cta: calc(3cqw * 2.3);
+  --fc-rotulo: calc(1.15cqw * 3);
+}
+[data-formato="9x16"] .cena-fechamento .frase { line-height: 1.04; white-space: normal; max-width: 6.4em; margin-inline: auto; }
+/* A luz de fundo fica numa faixa em torno do eixo da marca e do convite, mais larga que alta (como
+   no 16:9). A caixa passa das laterais e uma máscara leva a sobra de baixo a zero: o corte da
+   caixa nunca vira linha. */
+[data-formato="9x16"] .cena-fechamento .orbe {
+  inset: 26% -22% auto;
+  height: 50%;
+  -webkit-mask-image: linear-gradient(180deg, #000 58%, transparent);
+  mask-image: linear-gradient(180deg, #000 58%, transparent);
+}
+[data-formato="9x16"] .cena-fechamento .cta { margin-top: 6.6cqw; }
+/* a data perto do convite (o vão é ~⅓ do corpo do convite) e num corpo que se lê no celular */
+[data-formato="9x16"] .cena-fechamento .rotulo { margin-top: 2.6cqw; }
+/* o halo do ponto cai até zero com curva, sem borda de disco */
+[data-formato="9x16"] .cena-fechamento .luz-halo {
+  width: 30cqw;
+  background: radial-gradient(closest-side,
+    color-mix(in srgb, var(--brilho) 20%, transparent),
+    color-mix(in srgb, var(--luz-1) 26%, transparent) 46%,
+    color-mix(in srgb, var(--luz-1) 17%, transparent) 60%,
+    color-mix(in srgb, var(--luz-1) 9%, transparent) 72%,
+    color-mix(in srgb, var(--luz-1) 3.5%, transparent) 83%,
+    color-mix(in srgb, var(--luz-1) 0.8%, transparent) 92%,
+    transparent);
+}
+[data-formato="9x16"] .cena-fechamento .luz-nucleo { width: 1.3cqw; }
+[data-formato="9x16"] .cena-fechamento .luz-traco { width: 96cqw; height: 1.7cqw; }
+[data-formato="9x16"] .cena-fechamento .fio { height: 3.6cqw; margin-top: -1.8cqw; }
