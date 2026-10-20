@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 Discord / Telegram
+    url: https://instagram.com/marcolamaia
+    about: Ask questions or casual discussion via Telegram
+  - name: 📖 MarcFlow Documentation
+    url: https://instagram.com/marcolamaia
+    about: Read the docs before opening an issue
