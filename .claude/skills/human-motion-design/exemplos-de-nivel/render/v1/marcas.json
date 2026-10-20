@@ -1,0 +1,838 @@
+{
+ "titulo": "Exemplos de nível",
+ "fps": 30,
+ "bpm": 120,
+ "total": 19,
+ "inicio": 0,
+ "cenas": [
+  {
+   "id": "revelacao",
+   "titulo": "Revelação em etapas",
+   "inicio": 0,
+   "fim": 5
+  },
+  {
+   "id": "bento",
+   "titulo": "Bento que acende",
+   "inicio": 5,
+   "fim": 10
+  },
+  {
+   "id": "orbita",
+   "titulo": "Pilha que vira órbita",
+   "inicio": 10,
+   "fim": 14
+  },
+  {
+   "id": "fechamento",
+   "titulo": "Fechamento com luz",
+   "inicio": 14,
+   "fim": 19
+  }
+ ],
+ "cortes": [
+  5,
+  10,
+  14
+ ],
+ "transicoes": [
+  {
+   "de": "revelacao",
+   "para": "bento",
+   "tipo": "avancar-desfocar",
+   "inicio": 4.76,
+   "fim": 5,
+   "corte": 5
+  },
+  {
+   "de": "bento",
+   "para": "orbita",
+   "tipo": "na-cena",
+   "inicio": 10,
+   "fim": 10,
+   "corte": 10
+  },
+  {
+   "de": "orbita",
+   "para": "fechamento",
+   "tipo": "corte",
+   "inicio": 14,
+   "fim": 14,
+   "corte": 14
+  }
+ ],
+ "batidas": [
+  {
+   "cena": "revelacao",
+   "tipo": "luz",
+   "t": 0.03,
+   "texto": "O símbolo acende do preto como um ponto que cresce girando 50°; a luz dele abre o preto em volta, sem borda."
+  },
+  {
+   "cena": "revelacao",
+   "tipo": "tipo",
+   "t": 0.12,
+   "texto": "Uma frente de luz corre do símbolo para as pontas e cada letra acende quando ela passa: quente, do desfoque, assentando para fora."
+  },
+  {
+   "cena": "revelacao",
+   "tipo": "objeto",
+   "t": 0.8,
+   "texto": "Meia volta de chave (240 ms, inOutExpo, o meio vira risco de luz) e a marca abre pelo centro; a câmera recua com ela."
+  },
+  {
+   "cena": "revelacao",
+   "tipo": "luz",
+   "t": 1.5,
+   "texto": "Um reflexo sai do símbolo e corre pelo vidro dos itens, uma vez."
+  },
+  {
+   "cena": "revelacao",
+   "tipo": "tipo",
+   "t": 2.5,
+   "texto": "A palavra que vai virar gigante brilha e é sugada para dentro do símbolo."
+  },
+  {
+   "cena": "revelacao",
+   "tipo": "objeto",
+   "t": 3,
+   "texto": "Tranca na batida: a marca sobe e encolhe; o clique solta uma gota de luz até o horizonte."
+  },
+  {
+   "cena": "revelacao",
+   "tipo": "luz",
+   "t": 3.11,
+   "texto": "O horizonte nasce onde a gota cai e corre para as pontas; primeiro o brilho, depois a letra, da esquerda para a direita."
+  },
+  {
+   "cena": "revelacao",
+   "tipo": "camera",
+   "t": 3.46,
+   "texto": "Empurrão de 1,2 % quando a palavra trava (peso), devolvido devagar."
+  },
+  {
+   "cena": "revelacao",
+   "tipo": "vida",
+   "t": 4.1,
+   "texto": "Um brilho especular atravessa a palavra; o degradê escorre devagar e a luz do chão respira."
+  },
+  {
+   "cena": "bento",
+   "tipo": "tipo",
+   "t": 5,
+   "texto": "A frase sai do desfoque, letra a letra; o degradê varre o destaque."
+  },
+  {
+   "cena": "bento",
+   "tipo": "luz",
+   "t": 5.3,
+   "texto": "O degradê varre o destaque da frase, da cor do texto para a cor da marca."
+  },
+  {
+   "cena": "bento",
+   "tipo": "vida",
+   "t": 6,
+   "texto": "A frase segura viva: a luz atrás dela respira e desliza, a câmera empurra devagar."
+  },
+  {
+   "cena": "bento",
+   "tipo": "tipo",
+   "t": 6.5,
+   "texto": "Batida 3: as pontas partem primeiro e todas as letras chegam juntas a um ponto de luz."
+  },
+  {
+   "cena": "bento",
+   "tipo": "objeto",
+   "t": 6.74,
+   "texto": "O ponto estoura no símbolo do card herói e o card se abre a partir dele, grande, e assenta."
+  },
+  {
+   "cena": "bento",
+   "tipo": "luz",
+   "t": 7,
+   "texto": "Batida 4: uma frente de luz sai do símbolo e atravessa a grade por trás do vidro; cada card acende quando ela passa."
+  },
+  {
+   "cena": "bento",
+   "tipo": "objeto",
+   "t": 7.75,
+   "texto": "Cada conteúdo trava numa batida: a trilha e o número em 2,75; o infinito e a data em 3,0."
+  },
+  {
+   "cena": "bento",
+   "tipo": "vida",
+   "t": 8.5,
+   "texto": "Hold: as luzes atrás do vidro circulam e respiram, a onda segue ao vivo, o ponto pulsa na batida."
+  },
+  {
+   "cena": "bento",
+   "tipo": "camera",
+   "t": 9.25,
+   "texto": "Antecipação: a grade recua e escurece, só o card da capa fica aceso; o leque fecha com um clique."
+  },
+  {
+   "cena": "bento",
+   "tipo": "transicao",
+   "t": 9.42,
+   "texto": "Mergulho na capa da frente até o primeiro quadro da próxima cena."
+  },
+  {
+   "cena": "orbita",
+   "tipo": "objeto",
+   "t": 10,
+   "texto": "A capa chega no embalo do mergulho da cena anterior e assenta sozinha por uma batida."
+  },
+  {
+   "cena": "orbita",
+   "tipo": "objeto",
+   "t": 10.62,
+   "texto": "As outras caem de fora do quadro em accelerando (45 → 17 ms); cada impacto afunda a pilha e ela devolve."
+  },
+  {
+   "cena": "orbita",
+   "tipo": "objeto",
+   "t": 11.34,
+   "texto": "A pilha prende o ar: encolhe 8 % e torce 5° contra o giro."
+  },
+  {
+   "cena": "orbita",
+   "tipo": "objeto",
+   "t": 11.5,
+   "texto": "Batida 3: explode em espiral; a capa de baixo é a última a sair."
+  },
+  {
+   "cena": "orbita",
+   "tipo": "tipo",
+   "t": 12,
+   "texto": "Batida 4: a frase entra no vazio central, palavra a palavra."
+  },
+  {
+   "cena": "orbita",
+   "tipo": "luz",
+   "t": 12.2,
+   "texto": "Um reflexo dá a volta no anel, uma vez."
+  },
+  {
+   "cena": "orbita",
+   "tipo": "vida",
+   "t": 12.84,
+   "texto": "Quadro aprovado em movimento: o anel acelera devagar, a câmera avança, o degradê escorre."
+  },
+  {
+   "cena": "orbita",
+   "tipo": "camera",
+   "t": 13.44,
+   "texto": "A câmera atravessa o anel: a frase passa pela câmera, as capas saem pelas bordas com rastro."
+  },
+  {
+   "cena": "orbita",
+   "tipo": "transicao",
+   "t": 13.5,
+   "texto": "O fundo afunda no preto puro."
+  },
+  {
+   "cena": "fechamento",
+   "tipo": "luz",
+   "t": 14.1,
+   "texto": "O ponto de luz estoura e solta um traço horizontal; a frase entra na ordem de leitura, o miolo acende primeiro."
+  },
+  {
+   "cena": "fechamento",
+   "tipo": "luz",
+   "t": 14.6,
+   "texto": "A luz do horizonte sobe atrás da palavra em destaque."
+  },
+  {
+   "cena": "fechamento",
+   "tipo": "camera",
+   "t": 15.02,
+   "texto": "A câmera chega perto do planeta; a frase passa pela câmera."
+  },
+  {
+   "cena": "fechamento",
+   "tipo": "objeto",
+   "t": 15.25,
+   "texto": "A luz nasce símbolo com meia volta de chave; um brilho corre pelo aro a partir do centro."
+  },
+  {
+   "cena": "fechamento",
+   "tipo": "objeto",
+   "t": 15.75,
+   "texto": "O clique: as duas palavras da marca saem de dentro do símbolo."
+  },
+  {
+   "cena": "fechamento",
+   "tipo": "objeto",
+   "t": 16.74,
+   "texto": "O planeta cai; a marca sobe; o último fio do aro fica no quadro."
+  },
+  {
+   "cena": "fechamento",
+   "tipo": "tipo",
+   "t": 17,
+   "texto": "Na batida, o convite acende do fio para cima; na meia batida, a data cai dele para baixo."
+  },
+  {
+   "cena": "fechamento",
+   "tipo": "vida",
+   "t": 17.62,
+   "texto": "Um brilho atravessa a marca e desce pela data; o degradê escorre."
+  },
+  {
+   "cena": "fechamento",
+   "tipo": "objeto",
+   "t": 18.58,
+   "texto": "Meia volta tranca a marca de volta no símbolo, que vai ao centro, pulsa, vira ponto e apaga."
+  }
+ ],
+ "linhas": {
+  "16x9": {
+   "fps": 30,
+   "bpm": 120,
+   "total": 19,
+   "formato": "16x9",
+   "montagem": "principal",
+   "titulo": "Exemplos de nível",
+   "cenas": [
+    {
+     "id": "revelacao",
+     "titulo": "Revelação em etapas",
+     "indice": 0,
+     "inicio": 0,
+     "dur": 5,
+     "fim": 5,
+     "variante": null,
+     "fundoPuro": false,
+     "quadros": [
+      {
+       "id": "inicio",
+       "rotulo": "Início",
+       "legenda": "A marca inteira, fechada, em close, no escuro",
+       "t": 0.6
+      },
+      {
+       "id": "meio",
+       "rotulo": "Passo 2",
+       "legenda": "A chave gira e a marca se abre: o que ela guarda sai de dentro dela",
+       "t": 2.1
+      },
+      {
+       "id": "fim",
+       "rotulo": "Fim",
+       "legenda": "A marca tranca no alto e a palavra gigante nasce do horizonte de luz",
+       "t": 4.3,
+       "aprovado": true
+      }
+     ],
+     "tipo": "marca-em-etapas",
+     "permitirParado": [],
+     "cortesInternos": [],
+     "saida": {
+      "tipo": "avancar-desfocar",
+      "modo": "encadeada",
+      "dur": 0.24
+     },
+     "entrada": null,
+     "hash": "5fbcc8cc88b491fd"
+    },
+    {
+     "id": "bento",
+     "titulo": "Bento que acende",
+     "indice": 1,
+     "inicio": 5,
+     "dur": 5,
+     "fim": 10,
+     "variante": null,
+     "fundoPuro": false,
+     "quadros": [
+      {
+       "id": "inicio",
+       "rotulo": "Início",
+       "legenda": "A frase sozinha, o degradê já varrido",
+       "t": 1
+      },
+      {
+       "id": "meio",
+       "rotulo": "Passo 2",
+       "legenda": "O card herói aberto e a frente de luz acendendo a grade",
+       "t": 2.45
+      },
+      {
+       "id": "fim",
+       "rotulo": "Fim",
+       "legenda": "A grade inteira, cada card com o seu conteúdo travado",
+       "t": 4.25,
+       "aprovado": true
+      }
+     ],
+     "tipo": "montagem",
+     "permitirParado": [],
+     "cortesInternos": [],
+     "saida": {
+      "tipo": "na-cena",
+      "modo": "encadeada",
+      "dur": 0
+     },
+     "entrada": {
+      "tipo": "avancar-desfocar",
+      "modo": "encadeada",
+      "dur": 0.24
+     },
+     "hash": "3d5181c194d8c971"
+    },
+    {
+     "id": "orbita",
+     "titulo": "Pilha que vira órbita",
+     "indice": 2,
+     "inicio": 10,
+     "dur": 4,
+     "fim": 14,
+     "variante": null,
+     "fundoPuro": false,
+     "quadros": [
+      {
+       "id": "inicio",
+       "rotulo": "Início",
+       "legenda": "Uma capa só, grande, no centro",
+       "t": 0.3
+      },
+      {
+       "id": "meio",
+       "rotulo": "Passo 2",
+       "legenda": "As outras caem por cima e a pilha descansa",
+       "t": 1.42
+      },
+      {
+       "id": "fim",
+       "rotulo": "Fim",
+       "legenda": "A pilha explodiu em órbita; a frase no centro",
+       "t": 2.84,
+       "aprovado": true
+      }
+     ],
+     "tipo": "montagem",
+     "permitirParado": [],
+     "cortesInternos": [],
+     "saida": {
+      "tipo": "corte",
+      "modo": "encadeada",
+      "dur": 0
+     },
+     "entrada": {
+      "tipo": "na-cena",
+      "modo": "encadeada",
+      "dur": 0
+     },
+     "hash": "795310ed4ab01dd4"
+    },
+    {
+     "id": "fechamento",
+     "titulo": "Fechamento com luz",
+     "indice": 3,
+     "inicio": 14,
+     "dur": 5,
+     "fim": 19,
+     "variante": null,
+     "fundoPuro": false,
+     "quadros": [
+      {
+       "id": "inicio",
+       "rotulo": "Início",
+       "legenda": "A frase sobre um horizonte baixo e distante",
+       "t": 0.9
+      },
+      {
+       "id": "simbolo",
+       "rotulo": "Passo 2",
+       "legenda": "O símbolo no centro, sobre o planeta",
+       "t": 1.68
+      },
+      {
+       "id": "marca",
+       "rotulo": "Passo 3",
+       "legenda": "A marca completa com o planeta",
+       "t": 2.6
+      },
+      {
+       "id": "fim",
+       "rotulo": "Fim",
+       "legenda": "A marca sobe, o planeta sai e o convite nasce do fio de luz",
+       "t": 4.1,
+       "aprovado": true
+      }
+     ],
+     "tipo": "marca-em-etapas",
+     "permitirParado": [],
+     "cortesInternos": [],
+     "saida": {
+      "tipo": "corte",
+      "modo": "encadeada",
+      "dur": 0
+     },
+     "entrada": {
+      "tipo": "corte",
+      "modo": "encadeada",
+      "dur": 0
+     },
+     "hash": "ded3ed638f2a2ec6"
+    }
+   ],
+   "transicoes": [
+    {
+     "de": "revelacao",
+     "para": "bento",
+     "tipo": "avancar-desfocar",
+     "modo": "encadeada",
+     "opcoes": {
+      "avanco": 0.07,
+      "desfoque": 0.8,
+      "__dur": 0,
+      "__antes": 0.24,
+      "__depois": 0
+     },
+     "texto": null,
+     "textoEntrada": null,
+     "corte": 5,
+     "antes": 0.24,
+     "depois": 0,
+     "inicio": 4.76,
+     "fim": 5,
+     "dur": 0.24
+    },
+    {
+     "de": "bento",
+     "para": "orbita",
+     "tipo": "na-cena",
+     "modo": "encadeada",
+     "opcoes": {
+      "__dur": 0,
+      "__antes": 0,
+      "__depois": 0
+     },
+     "texto": "A câmera mergulha na capa da frente do card até ela ficar exatamente como a primeira capa da órbita.",
+     "textoEntrada": null,
+     "corte": 10,
+     "antes": 0,
+     "depois": 0,
+     "inicio": 10,
+     "fim": 10,
+     "dur": 0
+    },
+    {
+     "de": "orbita",
+     "para": "fechamento",
+     "tipo": "corte",
+     "modo": "encadeada",
+     "opcoes": {
+      "__dur": 0,
+      "__antes": 0,
+      "__depois": 0
+     },
+     "texto": "Corte seco no preto puro.",
+     "textoEntrada": null,
+     "corte": 14,
+     "antes": 0,
+     "depois": 0,
+     "inicio": 14,
+     "fim": 14,
+     "dur": 0
+    }
+   ],
+   "cortes": [
+    5,
+    10,
+    14
+   ],
+   "estilo": {
+    "curvaEntrada": [
+     0.16,
+     1,
+     0.3,
+     1
+    ],
+    "cascataLetra": 0.026,
+    "cascataPalavra": 0.04,
+    "entrada": 0.6,
+    "opacidade": 0.22,
+    "subida": 0.18,
+    "desfoque": 0.14,
+    "saida": 0.24,
+    "camera": 0.012
+   }
+  },
+  "9x16": {
+   "fps": 30,
+   "bpm": 120,
+   "total": 19,
+   "formato": "9x16",
+   "montagem": "principal",
+   "titulo": "Exemplos de nível",
+   "cenas": [
+    {
+     "id": "revelacao",
+     "titulo": "Revelação em etapas",
+     "indice": 0,
+     "inicio": 0,
+     "dur": 5,
+     "fim": 5,
+     "variante": null,
+     "fundoPuro": false,
+     "quadros": [
+      {
+       "id": "inicio",
+       "rotulo": "Início",
+       "legenda": "A marca inteira, fechada, em close, no escuro",
+       "t": 0.6
+      },
+      {
+       "id": "meio",
+       "rotulo": "Passo 2",
+       "legenda": "A chave gira e a marca se abre: o que ela guarda sai de dentro dela",
+       "t": 2.1
+      },
+      {
+       "id": "fim",
+       "rotulo": "Fim",
+       "legenda": "A marca tranca no alto e a palavra gigante nasce do horizonte de luz",
+       "t": 4.3,
+       "aprovado": true
+      }
+     ],
+     "tipo": "marca-em-etapas",
+     "permitirParado": [],
+     "cortesInternos": [],
+     "saida": {
+      "tipo": "avancar-desfocar",
+      "modo": "encadeada",
+      "dur": 0.24
+     },
+     "entrada": null,
+     "hash": "5fbcc8cc88b491fd"
+    },
+    {
+     "id": "bento",
+     "titulo": "Bento que acende",
+     "indice": 1,
+     "inicio": 5,
+     "dur": 5,
+     "fim": 10,
+     "variante": null,
+     "fundoPuro": false,
+     "quadros": [
+      {
+       "id": "inicio",
+       "rotulo": "Início",
+       "legenda": "A frase sozinha, o degradê já varrido",
+       "t": 1
+      },
+      {
+       "id": "meio",
+       "rotulo": "Passo 2",
+       "legenda": "O card herói aberto e a frente de luz acendendo a grade",
+       "t": 2.45
+      },
+      {
+       "id": "fim",
+       "rotulo": "Fim",
+       "legenda": "A grade inteira, cada card com o seu conteúdo travado",
+       "t": 4.25,
+       "aprovado": true
+      }
+     ],
+     "tipo": "montagem",
+     "permitirParado": [],
+     "cortesInternos": [],
+     "saida": {
+      "tipo": "na-cena",
+      "modo": "encadeada",
+      "dur": 0
+     },
+     "entrada": {
+      "tipo": "avancar-desfocar",
+      "modo": "encadeada",
+      "dur": 0.24
+     },
+     "hash": "3d5181c194d8c971"
+    },
+    {
+     "id": "orbita",
+     "titulo": "Pilha que vira órbita",
+     "indice": 2,
+     "inicio": 10,
+     "dur": 4,
+     "fim": 14,
+     "variante": null,
+     "fundoPuro": false,
+     "quadros": [
+      {
+       "id": "inicio",
+       "rotulo": "Início",
+       "legenda": "Uma capa só, grande, no centro",
+       "t": 0.3
+      },
+      {
+       "id": "meio",
+       "rotulo": "Passo 2",
+       "legenda": "As outras caem por cima e a pilha descansa",
+       "t": 1.42
+      },
+      {
+       "id": "fim",
+       "rotulo": "Fim",
+       "legenda": "A pilha explodiu em órbita; a frase no centro",
+       "t": 2.84,
+       "aprovado": true
+      }
+     ],
+     "tipo": "montagem",
+     "permitirParado": [],
+     "cortesInternos": [],
+     "saida": {
+      "tipo": "corte",
+      "modo": "encadeada",
+      "dur": 0
+     },
+     "entrada": {
+      "tipo": "na-cena",
+      "modo": "encadeada",
+      "dur": 0
+     },
+     "hash": "795310ed4ab01dd4"
+    },
+    {
+     "id": "fechamento",
+     "titulo": "Fechamento com luz",
+     "indice": 3,
+     "inicio": 14,
+     "dur": 5,
+     "fim": 19,
+     "variante": null,
+     "fundoPuro": false,
+     "quadros": [
+      {
+       "id": "inicio",
+       "rotulo": "Início",
+       "legenda": "A frase sobre um horizonte baixo e distante",
+       "t": 0.9
+      },
+      {
+       "id": "simbolo",
+       "rotulo": "Passo 2",
+       "legenda": "O símbolo no centro, sobre o planeta",
+       "t": 1.68
+      },
+      {
+       "id": "marca",
+       "rotulo": "Passo 3",
+       "legenda": "A marca completa com o planeta",
+       "t": 2.6
+      },
+      {
+       "id": "fim",
+       "rotulo": "Fim",
+       "legenda": "A marca sobe, o planeta sai e o convite nasce do fio de luz",
+       "t": 4.1,
+       "aprovado": true
+      }
+     ],
+     "tipo": "marca-em-etapas",
+     "permitirParado": [],
+     "cortesInternos": [],
+     "saida": {
+      "tipo": "corte",
+      "modo": "encadeada",
+      "dur": 0
+     },
+     "entrada": {
+      "tipo": "corte",
+      "modo": "encadeada",
+      "dur": 0
+     },
+     "hash": "ded3ed638f2a2ec6"
+    }
+   ],
+   "transicoes": [
+    {
+     "de": "revelacao",
+     "para": "bento",
+     "tipo": "avancar-desfocar",
+     "modo": "encadeada",
+     "opcoes": {
+      "avanco": 0.07,
+      "desfoque": 0.8,
+      "__dur": 0,
+      "__antes": 0.24,
+      "__depois": 0
+     },
+     "texto": null,
+     "textoEntrada": null,
+     "corte": 5,
+     "antes": 0.24,
+     "depois": 0,
+     "inicio": 4.76,
+     "fim": 5,
+     "dur": 0.24
+    },
+    {
+     "de": "bento",
+     "para": "orbita",
+     "tipo": "na-cena",
+     "modo": "encadeada",
+     "opcoes": {
+      "__dur": 0,
+      "__antes": 0,
+      "__depois": 0
+     },
+     "texto": "A câmera mergulha na capa da frente do card até ela ficar exatamente como a primeira capa da órbita.",
+     "textoEntrada": null,
+     "corte": 10,
+     "antes": 0,
+     "depois": 0,
+     "inicio": 10,
+     "fim": 10,
+     "dur": 0
+    },
+    {
+     "de": "orbita",
+     "para": "fechamento",
+     "tipo": "corte",
+     "modo": "encadeada",
+     "opcoes": {
+      "__dur": 0,
+      "__antes": 0,
+      "__depois": 0
+     },
+     "texto": "Corte seco no preto puro.",
+     "textoEntrada": null,
+     "corte": 14,
+     "antes": 0,
+     "depois": 0,
+     "inicio": 14,
+     "fim": 14,
+     "dur": 0
+    }
+   ],
+   "cortes": [
+    5,
+    10,
+    14
+   ],
+   "estilo": {
+    "curvaEntrada": [
+     0.16,
+     1,
+     0.3,
+     1
+    ],
+    "cascataLetra": 0.026,
+    "cascataPalavra": 0.04,
+    "entrada": 0.6,
+    "opacidade": 0.22,
+    "subida": 0.18,
+    "desfoque": 0.14,
+    "saida": 0.24,
+    "camera": 0.012
+   }
+  }
+ }
+}

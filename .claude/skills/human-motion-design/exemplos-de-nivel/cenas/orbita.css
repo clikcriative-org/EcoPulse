@@ -1,0 +1,52 @@
+/* orbita — Pilha que vira órbita. O CSS natural é o quadro aprovado: as capas na órbita (elipse
+   no plano do quadro, embaixo mais perto) e a frase no vazio do centro. As posições de cada capa
+   vêm do render (--x --y --r --s --z --b). Composição pela largura do 16:9 (cqw). */
+.cena-orbita { --orb-capa: 10.5cqw; --orb-frase: 5.2cqw; }
+.cena-orbita .camada { position: absolute; inset: 0; pointer-events: none; }
+/* a atmosfera do centro (a mesma do fim do bento: o mergulho termina nela) */
+.cena-orbita .nucleo {
+  z-index: 0;
+  background: radial-gradient(ellipse at 50% 50%, color-mix(in srgb, var(--luz-2) 60%, transparent), color-mix(in srgb, var(--luz-2) 22%, transparent) 40%, color-mix(in srgb, var(--luz-2) 6%, transparent) 58%, transparent 70%);
+}
+.cena-orbita .capa {
+  left: 50%;
+  top: 50%;
+  width: var(--orb-capa);
+  z-index: var(--z);
+  box-shadow: 0 0.52cqw 1.25cqw color-mix(in srgb, var(--fundo) 20%, transparent);
+  filter: brightness(var(--b));
+  transform: translate(-50%, -50%) translate(var(--x), var(--y)) rotate(var(--r)) scale(var(--s));
+}
+/* Faixa de luz do hold: atravessa cada capa uma vez, recortada pelo raio dela. */
+.cena-orbita .capa-reflexo {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background: linear-gradient(115deg, transparent 41%, color-mix(in srgb, var(--texto) 14%, transparent) 46%, color-mix(in srgb, var(--texto) 55%, transparent) 49%, color-mix(in srgb, var(--brilho) 90%, transparent) 50%, color-mix(in srgb, var(--texto) 55%, transparent) 51%, color-mix(in srgb, var(--texto) 14%, transparent) 54%, transparent 59%) no-repeat;
+  background-size: 300% 100%;
+}
+.cena-orbita .orbita-frase { z-index: 40; }
+.cena-orbita .frase { font-size: var(--orb-frase); white-space: nowrap; }
+/* dissolve de camadas: cópias das capas na ordem do anel, por cima das originais, só na troca */
+.cena-orbita .fantasmas { z-index: 25; display: none; opacity: 0; }
+/* o fundo afunda no preto puro por baixo das capas; a cortina garante os últimos quadros */
+.cena-orbita .vazio { z-index: 0; background: var(--fundo); opacity: 0; }
+.cena-orbita .cortina { z-index: 60; background: var(--fundo); opacity: 0; }
+.cena-orbita .vinheta {
+  z-index: 35;
+  background: radial-gradient(ellipse 85% 80% at 50% 50%,
+    transparent 30%,
+    color-mix(in srgb, var(--fundo) 4.2%, transparent) 44%,
+    color-mix(in srgb, var(--fundo) 22.9%, transparent) 58%,
+    color-mix(in srgb, var(--fundo) 49.1%, transparent) 72%,
+    color-mix(in srgb, var(--fundo) 67.8%, transparent) 86%,
+    color-mix(in srgb, var(--fundo) 72%, transparent) 100%);
+}
+
+/* ── 9:16 · em pé: a frase grande no meio (duas linhas, sem viúva), dentro de uma órbita mais alta
+   que larga (orbita.js, VERT). É o maior corpo que deixa folga para as capas das laterais. */
+[data-formato="9x16"] .cena-orbita { --orb-frase: calc(5.2cqw * 1.75); }

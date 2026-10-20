@@ -1,0 +1,39 @@
+/* {{id}} — Palavra gigante. O CSS natural é o quadro aprovado. */
+.cena-{{id}} { --luz-a-x: 50%; --luz-a-y: 66%; --luz-b-x: 30%; --luz-b-y: 30%; }
+.cena-{{id}} .pilha { gap: 2.2cqmin; }
+/* a palavra ocupa 84 % da largura: o montar mede (tipo.caber); este tamanho é só o ponto de partida */
+.cena-{{id}} .palavra {
+  font-size: 30cqmin;
+  line-height: 0.92;
+  white-space: nowrap;
+}
+/* o apoio: pequeno perto da manchete, mas de ler (5 cqmin), na cor de apoio */
+.cena-{{id}} .linha-apoio {
+  font-family: var(--fonte-titulo);
+  font-size: 6.4cqmin;
+  letter-spacing: -0.005em;
+  color: var(--texto-suave);
+}
+/* a linha de luz embaixo da palavra: queda macia nas pontas, sem borda */
+.cena-{{id}} .horizonte {
+  width: 70cqw;
+  height: 0.28cqmin;
+  margin-top: 1.2cqmin;
+  transform-origin: 50% 50%;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--destaque) 35%, transparent) 22%, color-mix(in srgb, var(--brilho) 70%, transparent) 50%, color-mix(in srgb, var(--destaque) 35%, transparent) 78%, transparent);
+}
+.cena-{{id}} .eco {
+  position: absolute;
+  left: -10cqw;
+  top: 50%;
+  translate: 0 -50%;
+  font-family: var(--fonte-titulo);
+  font-weight: var(--titulo-peso, 400);
+  font-size: 120cqmin;
+  line-height: 1;
+  color: color-mix(in srgb, var(--texto) 5%, transparent);
+  filter: blur(1.6cqmin);
+}
+[data-formato="9x16"] .cena-{{id}} .horizonte { width: 84cqw; }
+[data-formato="9x16"] .cena-{{id}} .linha-apoio { font-size: 7cqmin; }
+[data-formato="9x16"] .cena-{{id}} .eco { left: -40cqw; top: 40%; }

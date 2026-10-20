@@ -1,0 +1,223 @@
+/* revelacao — Revelação em etapas. O CSS desenha a FAIXA ABERTA (o layout que o montar mede);
+   o quadro aprovado (marca fechada no alto + palavra gigante) é calculado no quadro(t).
+   Tamanhos em cqw: a composição é pela largura do 16:9. */
+.cena-revelacao {
+  --rv-marca: 5.4cqw;      /* corpo das palavras da marca */
+  --rv-simbolo: 6.2cqw;    /* caixa do símbolo */
+  --rv-item: 1.75cqw;      /* corpo dos itens que a marca guarda */
+  --rv-icone: 2cqw;
+  --rv-gigante: 21cqw;     /* a palavra gigante */
+}
+
+/* ── luz ── */
+/* Chão: a luz de horizonte que sobe por baixo. Queda até zero com inclinação zero (sem borda). */
+.cena-revelacao .chao {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 95% 120% at 50% 118%,
+    color-mix(in srgb, var(--luz-1) 100%, transparent) 0%,
+    color-mix(in srgb, color-mix(in srgb, var(--luz-1) 80%, var(--luz-2)) 100%, transparent) 20%,
+    color-mix(in srgb, color-mix(in srgb, var(--luz-1) 70%, var(--luz-2)) 99.5%, transparent) 27%,
+    color-mix(in srgb, color-mix(in srgb, var(--luz-1) 60%, var(--luz-2)) 96.5%, transparent) 33%,
+    color-mix(in srgb, color-mix(in srgb, var(--luz-1) 50%, var(--luz-2)) 89.6%, transparent) 40%,
+    color-mix(in srgb, color-mix(in srgb, var(--luz-1) 40%, var(--luz-2)) 79%, transparent) 47%,
+    color-mix(in srgb, color-mix(in srgb, var(--luz-1) 30%, var(--luz-2)) 65.3%, transparent) 53%,
+    color-mix(in srgb, color-mix(in srgb, var(--luz-1) 20%, var(--luz-2)) 50%, transparent) 60%,
+    color-mix(in srgb, var(--luz-2) 34.7%, transparent) 67%,
+    color-mix(in srgb, var(--luz-2) 21%, transparent) 73%,
+    color-mix(in srgb, var(--luz-2) 10.4%, transparent) 80%,
+    color-mix(in srgb, var(--luz-2) 3.5%, transparent) 87%,
+    color-mix(in srgb, var(--luz-2) 0.5%, transparent) 93%,
+    transparent 100%);
+}
+/* Orbe: a luz atrás da palavra gigante (acende quando ela nasce). */
+.cena-revelacao .orbe {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 58% 54% at 50% 56%,
+    color-mix(in srgb, var(--luz-3) 32%, transparent) 0%,
+    color-mix(in srgb, color-mix(in srgb, var(--luz-3) 85%, var(--luz-1)) 32%, transparent) 8%,
+    color-mix(in srgb, color-mix(in srgb, var(--luz-3) 70%, var(--luz-1)) 31.8%, transparent) 16%,
+    color-mix(in srgb, color-mix(in srgb, var(--luz-3) 55%, var(--luz-1)) 30.9%, transparent) 23%,
+    color-mix(in srgb, color-mix(in srgb, var(--luz-3) 40%, var(--luz-1)) 28.7%, transparent) 31%,
+    color-mix(in srgb, color-mix(in srgb, var(--luz-3) 25%, var(--luz-1)) 25.3%, transparent) 39%,
+    color-mix(in srgb, var(--luz-1) 20.9%, transparent) 46%,
+    color-mix(in srgb, var(--luz-1) 16%, transparent) 54%,
+    color-mix(in srgb, var(--luz-1) 11.1%, transparent) 62%,
+    color-mix(in srgb, var(--luz-1) 6.7%, transparent) 69%,
+    color-mix(in srgb, var(--luz-1) 3.3%, transparent) 77%,
+    color-mix(in srgb, var(--luz-1) 1.1%, transparent) 85%,
+    color-mix(in srgb, var(--luz-1) 0.2%, transparent) 92%,
+    transparent 100%);
+}
+/* Halo do símbolo: acende com a chave e abre com a marca; sempre desfocado (borda nunca aparece). */
+.cena-revelacao .halo-simbolo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 30cqw;
+  height: 16cqw;
+  pointer-events: none;
+  background: radial-gradient(closest-side,
+    color-mix(in srgb, var(--brilho) 20%, transparent),
+    color-mix(in srgb, var(--luz-1) 26%, transparent) 46%,
+    color-mix(in srgb, var(--luz-1) 12%, transparent) 66%,
+    color-mix(in srgb, var(--luz-1) 3%, transparent) 84%,
+    transparent 100%);
+}
+.cena-revelacao .vinheta {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  background: radial-gradient(ellipse 85% 80% at 50% 50%,
+    transparent 30%,
+    color-mix(in srgb, var(--fundo) 0.6%, transparent) 37%,
+    color-mix(in srgb, var(--fundo) 4.2%, transparent) 44%,
+    color-mix(in srgb, var(--fundo) 11.7%, transparent) 51%,
+    color-mix(in srgb, var(--fundo) 22.9%, transparent) 58%,
+    color-mix(in srgb, var(--fundo) 36%, transparent) 65%,
+    color-mix(in srgb, var(--fundo) 49.1%, transparent) 72%,
+    color-mix(in srgb, var(--fundo) 60.3%, transparent) 79%,
+    color-mix(in srgb, var(--fundo) 67.8%, transparent) 86%,
+    color-mix(in srgb, var(--fundo) 71.4%, transparent) 93%,
+    color-mix(in srgb, var(--fundo) 72%, transparent) 100%);
+}
+
+/* ── a faixa (aberta) ── */
+.cena-revelacao .faixa {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9cqw;
+  z-index: 5;
+}
+.cena-revelacao .peca { position: relative; display: block; flex: none; z-index: 2; }
+.cena-revelacao .marca-palavra {
+  display: block;
+  font-size: var(--rv-marca);
+  line-height: 1.1;
+  white-space: nowrap;
+  color: var(--texto);
+}
+.cena-revelacao .peca-a .marca-palavra { font-family: var(--fonte-titulo); font-weight: var(--marca-a-peso, 400); letter-spacing: -0.035em; }
+.cena-revelacao .peca-b .marca-palavra { font-family: var(--fonte-marca); font-weight: var(--marca-b-peso, 500); font-size: calc(var(--rv-marca) * 0.88); letter-spacing: -0.01em; }
+.cena-revelacao .marca-palavra .m-letra { position: relative; }
+.cena-revelacao .peca-simbolo {
+  width: var(--rv-simbolo);
+  height: var(--rv-simbolo);
+  margin-inline: calc(var(--rv-simbolo) * -0.19);
+  z-index: 3;
+  color: var(--texto);
+}
+.cena-revelacao .peca-simbolo svg { display: block; width: 100%; height: 100%; }
+/* Os itens são tipografia, não botões: texto e um ícone desenhado em luz, sem cápsula nem borda. */
+.cena-revelacao .item {
+  position: relative;
+  /* folga invisível: o brilho do item não é cortado pela máscara (que recorta na caixa) */
+  padding: 1.4cqw;
+  margin: -1.4cqw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  height: calc(3.6cqw + 2.8cqw);
+  color: var(--texto);
+  font-family: var(--fonte-texto);
+  font-size: var(--rv-item);
+  letter-spacing: -0.01em;
+  line-height: 1;
+  white-space: nowrap;
+}
+.cena-revelacao .item-texto { display: block; padding-inline: 0.9cqw; }
+.cena-revelacao .item-icone { width: calc(3.6cqw + 2.8cqw); color: var(--brilho); }
+.cena-revelacao .item-icone svg { display: block; width: var(--rv-icone); height: var(--rv-icone); overflow: visible; }
+.cena-revelacao .item-icone svg * { stroke-width: 1.4; }
+
+/* ── a palavra gigante ── */
+.cena-revelacao .gigante {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  margin: 0;
+  z-index: 6;
+  transform: translateY(calc(-50% + 4.1cqw));
+  font-family: var(--fonte-titulo);
+  font-weight: var(--titulo-peso);
+  font-size: var(--rv-gigante);
+  line-height: 0.95;
+  letter-spacing: -0.06em;
+  text-align: center;
+  white-space: nowrap;
+}
+.cena-revelacao .gigante > span { display: block; }
+.cena-revelacao .gigante-brilho { position: absolute; inset: 0; filter: blur(2.6cqw); opacity: 0.55; }
+.cena-revelacao .gigante-palavra { position: relative; }
+/* Horizonte que acende a palavra: núcleo fino e névoa da luz. Fica abaixo da linha de base. */
+.cena-revelacao .horizonte {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: calc(var(--rv-gigante) * 0.3);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0;
+  background:
+    radial-gradient(closest-side, color-mix(in srgb, var(--brilho) 95%, transparent), color-mix(in srgb, var(--brilho) 40%, transparent) 45%, color-mix(in srgb, var(--brilho) 14%, transparent) 70%, color-mix(in srgb, var(--brilho) 3%, transparent) 88%, transparent) center / 100% 9% no-repeat,
+    radial-gradient(closest-side, color-mix(in srgb, var(--luz-3) 45%, transparent), color-mix(in srgb, var(--luz-3) 40.3%, transparent) 20%, color-mix(in srgb, var(--luz-3) 29.2%, transparent) 40%, color-mix(in srgb, var(--luz-3) 15.8%, transparent) 60%, color-mix(in srgb, var(--luz-3) 4.7%, transparent) 80%, color-mix(in srgb, var(--luz-3) 1.3%, transparent) 90%, transparent) center / 72% 100% no-repeat;
+}
+/* A gota: a mesma luz, em pé, que cai do símbolo no clique. */
+.cena-revelacao .gota {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 3cqw;
+  height: 10cqw;
+  z-index: 7;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0;
+  background:
+    radial-gradient(closest-side, color-mix(in srgb, var(--brilho) 95%, transparent), color-mix(in srgb, var(--brilho) 40%, transparent) 45%, color-mix(in srgb, var(--brilho) 14%, transparent) 70%, color-mix(in srgb, var(--brilho) 3%, transparent) 88%, transparent) center / 12% 100% no-repeat,
+    radial-gradient(closest-side, color-mix(in srgb, var(--luz-3) 45%, transparent), color-mix(in srgb, var(--luz-3) 29.2%, transparent) 40%, color-mix(in srgb, var(--luz-3) 4.7%, transparent) 80%, transparent) center / 100% 86% no-repeat;
+}
+
+/* ── 9:16: a faixa vira um eixo vertical. A faixa é um ponto (o símbolo) que a câmera move e
+   escala; cada peça e cada item é posicionado pelo quadro(t) a partir dele (montarV/quadroV). ── */
+[data-formato="9x16"] .cena-revelacao {
+  --rv-marca: calc(5.4cqw * 2.5);
+  --rv-simbolo: calc(6.2cqw * 2.5);
+  --rv-item: calc(1.75cqw * 3.45);   /* corpo de celular (~65 px) */
+  --rv-icone: calc(2cqw * 3.45);
+  --rv-linha: 9cqw;                  /* altura de cada item na coluna */
+  --rv-gigante: 23cqw;               /* o quadro(t) ainda encolhe a palavra se ela passar de 86 % da largura */
+}
+[data-formato="9x16"] .cena-revelacao .faixa { inset: auto; left: 50%; top: 50%; width: 0; height: 0; display: block; transform-origin: 0 0; }
+[data-formato="9x16"] .cena-revelacao :is(.peca, .item) { position: absolute; left: 0; top: 0; margin: 0; }
+[data-formato="9x16"] .cena-revelacao .peca-simbolo { margin: 0; }
+[data-formato="9x16"] .cena-revelacao .item { padding: 2cqw; height: calc(var(--rv-linha) + 4cqw); }
+[data-formato="9x16"] .cena-revelacao .item-icone { width: calc(var(--rv-linha) + 4cqw); }
+[data-formato="9x16"] .cena-revelacao .item-icone svg * { stroke-width: 1.2; }
+[data-formato="9x16"] .cena-revelacao .gota { width: 4cqw; }
+/* halo alto atrás da coluna: queda em smoothstep até zero (sem borda de elipse) e desfoque largo */
+[data-formato="9x16"] .cena-revelacao .halo-simbolo {
+  left: 50%;
+  top: 50%;
+  width: 78cqw;
+  height: 118cqw;
+  background: radial-gradient(closest-side,
+    color-mix(in srgb, var(--brilho) 16%, transparent),
+    color-mix(in srgb, var(--luz-1) 24%, transparent) 30%,
+    color-mix(in srgb, var(--luz-1) 22.6%, transparent) 42%,
+    color-mix(in srgb, var(--luz-1) 18.5%, transparent) 54%,
+    color-mix(in srgb, var(--luz-1) 12%, transparent) 65%,
+    color-mix(in srgb, var(--luz-1) 5.6%, transparent) 77%,
+    color-mix(in srgb, var(--luz-1) 1.5%, transparent) 88%,
+    transparent 100%);
+}
+/* a luz da palavra gigante fica atrás dela, não no meio do quadro inteiro */
+[data-formato="9x16"] .cena-revelacao .orbe { inset: auto 0; top: 36cqw; height: 100cqw; }

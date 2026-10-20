@@ -1,0 +1,109 @@
+/* _comum.css — as capas de demonstração (ver _comum.js). Tudo dentro da capa é medido pela
+   largura dela (cqi), então ela é a mesma em qualquer tamanho. Proporção 16:10, raio da marca.
+   Cada capa tem duas cores (--ca, --cb, dos tokens --capa-*): capa é conteúdo, como uma foto. */
+.capa {
+  position: absolute;
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  container-type: inline-size;
+  border-radius: var(--raio-capa, 0.5cqw);
+  background: var(--fundo);
+}
+.capa-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.capa-luz {
+  position: absolute;
+  inset: 0;
+  background-color: color-mix(in srgb, var(--ca) 14%, var(--fundo));
+}
+/* horizonte: o céu acende atrás de um planeta escuro de aro claro */
+.capa-horizonte .capa-luz {
+  background-image:
+    radial-gradient(ellipse 160% 100% at 50% 135%, color-mix(in srgb, var(--fundo) 94%, var(--ca)) 0%, color-mix(in srgb, var(--fundo) 86%, var(--ca)) 61.6%, color-mix(in srgb, var(--cb) 60%, var(--texto)) 62.5%, color-mix(in srgb, var(--cb) 80%, transparent) 63.6%, color-mix(in srgb, var(--cb) 45%, transparent) 66%, color-mix(in srgb, var(--ca) 30%, transparent) 72%, transparent 86%),
+    radial-gradient(ellipse 85% 75% at 50% 82%, color-mix(in srgb, var(--cb) 90%, transparent) 0%, color-mix(in srgb, var(--ca) 75%, transparent) 30%, color-mix(in srgb, var(--ca) 25%, transparent) 60%, transparent 82%),
+    linear-gradient(180deg, color-mix(in srgb, var(--ca) 18%, var(--fundo)) 0%, color-mix(in srgb, var(--ca) 45%, var(--fundo)) 75%);
+}
+/* orbe: uma esfera de luz, com núcleo claro, meio fora do quadro */
+.capa-orbe .capa-luz {
+  background-image:
+    radial-gradient(circle at var(--px) var(--py), color-mix(in srgb, var(--cb) 30%, var(--texto)) 0%, var(--cb) 9%, color-mix(in srgb, var(--ca) 85%, transparent) 22%, color-mix(in srgb, var(--ca) 35%, transparent) 40%, transparent 64%),
+    radial-gradient(ellipse 90% 80% at calc(100% - var(--px)) 110%, color-mix(in srgb, var(--ca) 55%, transparent), transparent 70%),
+    linear-gradient(160deg, color-mix(in srgb, var(--ca) 22%, var(--fundo)), var(--fundo));
+}
+/* feixe: uma coluna de luz que cai e acende o chão */
+.capa-feixe .capa-luz {
+  background-image:
+    linear-gradient(90deg, transparent calc(var(--px) - 18%), color-mix(in srgb, var(--ca) 35%, transparent) calc(var(--px) - 8%), color-mix(in srgb, var(--cb) 80%, var(--texto)) var(--px), color-mix(in srgb, var(--ca) 35%, transparent) calc(var(--px) + 8%), transparent calc(var(--px) + 18%)),
+    radial-gradient(ellipse 80% 40% at var(--px) 100%, color-mix(in srgb, var(--cb) 85%, transparent), color-mix(in srgb, var(--ca) 40%, transparent) 50%, transparent 80%),
+    linear-gradient(180deg, var(--fundo) 0%, color-mix(in srgb, var(--ca) 28%, var(--fundo)) 100%);
+}
+/* diagonal: um plano de cor cortado na diagonal, com a borda acesa */
+.capa-diagonal .capa-luz {
+  background-image:
+    linear-gradient(calc(115deg + var(--gr)), transparent 44%, color-mix(in srgb, var(--cb) 70%, var(--texto)) 49.5%, var(--cb) 51%, color-mix(in srgb, var(--ca) 90%, transparent) 56%, color-mix(in srgb, var(--ca) 55%, var(--fundo)) 78%, color-mix(in srgb, var(--ca) 30%, var(--fundo)) 100%),
+    radial-gradient(ellipse 60% 70% at 20% 20%, color-mix(in srgb, var(--cb) 25%, transparent), transparent 70%),
+    linear-gradient(var(--fundo), var(--fundo));
+}
+/* aurora: duas cores grandes que se misturam e um risco de luz */
+.capa-aurora .capa-luz {
+  background-image:
+    linear-gradient(calc(160deg + var(--gr)), transparent 47%, color-mix(in srgb, var(--texto) 70%, transparent) 50%, transparent 53%),
+    radial-gradient(ellipse 70% 60% at var(--px) var(--py), color-mix(in srgb, var(--ca) 95%, transparent), color-mix(in srgb, var(--ca) 30%, transparent) 55%, transparent 75%),
+    radial-gradient(ellipse 65% 70% at calc(100% - var(--px)) 80%, color-mix(in srgb, var(--cb) 90%, transparent), color-mix(in srgb, var(--cb) 25%, transparent) 55%, transparent 75%),
+    linear-gradient(var(--fundo), var(--fundo));
+}
+/* letreiro: o título gigante é a arte (degradê das duas cores, luz atrás) */
+.capa-letreiro .capa-luz {
+  background-image:
+    radial-gradient(ellipse 70% 60% at var(--px) 30%, color-mix(in srgb, var(--ca) 45%, transparent), transparent 70%),
+    linear-gradient(200deg, color-mix(in srgb, var(--cb) 18%, var(--fundo)), var(--fundo) 70%);
+}
+.capa-palavra {
+  position: absolute;
+  z-index: 1;
+  left: 5.5cqi;
+  bottom: 4cqi;
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+  font-size: 17cqi;
+  line-height: 1.05;
+  letter-spacing: -0.055em;
+  white-space: nowrap;
+  padding-bottom: 0.08em;
+  background: linear-gradient(100deg, color-mix(in srgb, var(--cb) 40%, var(--texto)) 0%, var(--cb) 40%, var(--ca) 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.capa-palavra ~ .capa-titulo { opacity: 0; }
+/* sombra de leitura embaixo, para o título */
+.capa-arte::after {
+  content: '';
+  position: absolute;
+  inset: 45% 0 0;
+  background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--fundo) 55%, transparent));
+  pointer-events: none;
+}
+.capa-num {
+  position: absolute;
+  z-index: 1;
+  right: 5cqi;
+  top: 4.5cqi;
+  font-family: var(--fonte-texto);
+  font-size: 4.6cqi;
+  letter-spacing: 0.08em;
+  color: color-mix(in srgb, var(--texto) 80%, transparent);
+}
+.capa-titulo {
+  position: absolute;
+  z-index: 1;
+  left: 5.5cqi;
+  bottom: 5cqi;
+  font-family: var(--fonte-titulo);
+  font-size: 9.5cqi;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: var(--texto);
+  white-space: nowrap;
+}

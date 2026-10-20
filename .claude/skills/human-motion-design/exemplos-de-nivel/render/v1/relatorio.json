@@ -1,0 +1,87 @@
+{
+ "versao": 1,
+ "data": "2026-10-07",
+ "fps": 30,
+ "qualidade": "final",
+ "montagem": "principal",
+ "formatos": {
+  "16x9": {
+   "arquivo": "exemplos-de-nivel-16x9-30fps.mp4",
+   "quadros": 570,
+   "de": 0,
+   "ate": 19,
+   "segundosRender": 38,
+   "renderizados": 570,
+   "cenas": [
+    "cenas/exemplos-de-nivel-01-revelacao-16x9-30fps.mp4",
+    "cenas/exemplos-de-nivel-02-bento-16x9-30fps.mp4",
+    "cenas/exemplos-de-nivel-03-orbita-16x9-30fps.mp4",
+    "cenas/exemplos-de-nivel-04-fechamento-16x9-30fps.mp4"
+   ],
+   "capa": "capa-16x9.png",
+   "fluidez": {
+    "resumo": "1 ponto(s) para olhar: 1 degrau",
+    "alertas": [
+     {
+      "tipo": "degrau",
+      "i": 335,
+      "t": 11.2,
+      "d": 1.1,
+      "viz": 6.08,
+      "cena": "orbita",
+      "tituloCena": "Pilha que vira órbita",
+      "tLocal": 1.2,
+      "frase": "movimento forte que para seco: falta pouso (velocidade e desaceleração chegando juntas a zero)"
+     }
+    ]
+   },
+   "diretor": {
+    "metricas": {
+     "energia": {
+      "media": 2.14,
+      "mediana": 1.65,
+      "quaseParados": 13
+     },
+     "paradoAosOlhos": 0,
+     "cortesPorSegundo": 0.16,
+     "duracao": 19
+    },
+    "notas": []
+   }
+  },
+  "9x16": {
+   "arquivo": "exemplos-de-nivel-9x16-30fps.mp4",
+   "quadros": 570,
+   "de": 0,
+   "ate": 19,
+   "segundosRender": 35,
+   "renderizados": 570,
+   "cenas": [
+    "cenas/exemplos-de-nivel-01-revelacao-9x16-30fps.mp4",
+    "cenas/exemplos-de-nivel-02-bento-9x16-30fps.mp4",
+    "cenas/exemplos-de-nivel-03-orbita-9x16-30fps.mp4",
+    "cenas/exemplos-de-nivel-04-fechamento-9x16-30fps.mp4"
+   ],
+   "capa": "capa-9x16.png",
+   "fluidez": {
+    "resumo": "ok, sem trancos (570 quadros a 30 qps)",
+    "alertas": []
+   },
+   "diretor": {
+    "metricas": {
+     "energia": {
+      "media": 2.32,
+      "mediana": 1.5,
+      "quaseParados": 13
+     },
+     "paradoAosOlhos": 0,
+     "cortesPorSegundo": 0.16,
+     "duracao": 19
+    },
+    "notas": []
+   }
+  }
+ },
+ "erros": [],
+ "segundos": 114
+}

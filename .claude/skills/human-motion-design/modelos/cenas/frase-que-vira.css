@@ -1,0 +1,27 @@
+/* {{id}} — Frase que vira. O CSS natural é o quadro aprovado (a frase assentada). */
+.cena-{{id}} { --luz-a-x: 46%; --luz-a-y: 50%; --luz-b-x: 62%; --luz-b-y: 38%; }
+.cena-{{id}} .frase {
+  font-size: 16cqmin;
+  max-width: 84cqw;
+  text-wrap: balance;
+}
+/* o ponto de luz: queda macia até zero, sem borda (nasce no centro e o quadro leva ao lugar certo) */
+.cena-{{id}} .ponto {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 22cqmin;
+  height: 22cqmin;
+  margin: -11cqmin 0 0 -11cqmin;
+  opacity: 0;
+  mix-blend-mode: plus-lighter;
+  background: radial-gradient(circle,
+    color-mix(in srgb, var(--brilho) 95%, transparent) 0%,
+    color-mix(in srgb, var(--brilho) 62%, transparent) 6%,
+    color-mix(in srgb, var(--destaque) 40%, transparent) 14%,
+    color-mix(in srgb, var(--destaque) 18%, transparent) 26%,
+    color-mix(in srgb, var(--destaque) 6%, transparent) 40%,
+    color-mix(in srgb, var(--destaque) 1.5%, transparent) 54%,
+    transparent 70%);
+}
+[data-formato="9x16"] .cena-{{id}} .frase { font-size: 15cqmin; max-width: 84cqw; }

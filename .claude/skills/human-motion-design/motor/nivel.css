@@ -1,0 +1,55 @@
+/* nivel.css — materiais de "nível de filme" (ver motor/nivel.js). Só tokens da marca, com recuos
+   neutros. Tokens opcionais que a marca pode preencher: --vidro --vidro-reflexo --vidro-borda
+   --cartao-forte --cartao-heroi --raio.
+
+   .m-vidro        vidro escuro fosco sobre luz: deixa passar a luz de trás (backdrop), tem a sua
+                   própria luz atrás (duas manchas: --x1 --y1 --c1 e --x2 --y2 --c2, intensidade
+                   --mo) e um fio de borda claro em cima e na ponta (--vidro-borda, opacidade --borda).
+                   Uma família só: todos os cards iguais, muda só a cor da luz de cada um.
+   .m-vidro-forte  o card de destaque: a cor da marca como superfície (sem vidro).
+   .m-vidro-heroi  o protagonista: luz da marca de dentro para fora. */
+.m-vidro {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: var(--raio, 1.6cqw);
+  background:
+    var(--vidro-reflexo, linear-gradient(158deg, color-mix(in srgb, #fff 9%, transparent) 0%, color-mix(in srgb, #fff 2%, transparent) 28%, transparent 46%)),
+    var(--vidro, linear-gradient(color-mix(in srgb, #0a0c10 62%, transparent), color-mix(in srgb, #050608 74%, transparent)));
+  -webkit-backdrop-filter: blur(2.2cqw) saturate(1.35);
+  backdrop-filter: blur(2.2cqw) saturate(1.35);
+}
+.m-vidro::before {
+  content: '';
+  position: absolute;
+  inset: -15%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at var(--x1, 50%) var(--y1, 100%), var(--c1, transparent) 0%, transparent 46%),
+    radial-gradient(circle at var(--x2, 50%) var(--y2, 50%), var(--c2, transparent) 0%, transparent 40%);
+  filter: blur(2cqw) saturate(0.7);
+  opacity: var(--mo, 0.7);
+}
+.m-vidro::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: var(--vidro-borda, linear-gradient(145deg, color-mix(in srgb, #fff 36%, transparent), color-mix(in srgb, #fff 6%, transparent) 36%, color-mix(in srgb, #fff 4%, transparent) 64%, color-mix(in srgb, #fff 24%, transparent)));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: var(--borda, 1);
+}
+.m-vidro-forte {
+  background: var(--cartao-forte, radial-gradient(ellipse 95% 85% at 85% 0%, var(--destaque, #ccc) 0%, color-mix(in srgb, var(--destaque, #ccc) 55%, var(--fundo, #000)) 40%, var(--fundo, #000) 100%));
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.m-vidro-forte::before { display: none; }
+.m-vidro-heroi {
+  background: var(--cartao-heroi, radial-gradient(ellipse 85% 70% at 50% 38%, var(--luz-1, #333) 0%, color-mix(in srgb, var(--luz-1, #333) 50%, var(--fundo, #000)) 40%, var(--fundo, #000) 100%));
+}

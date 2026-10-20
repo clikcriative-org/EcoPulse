@@ -1,0 +1,341 @@
+/* bento — Bento que acende. O CSS natural é o quadro aprovado: a grade inteira acesa, cada card
+   com o seu conteúdo travado (a frase e as luzes de passagem ficam apagadas). Composição pela
+   largura do 16:9 (cqw). Uma família só: vidro escuro; muda só a cor da luz atrás de cada card. */
+.cena-bento {
+  --bt-largura: 88cqw;
+  --bt-altura: 48cqw;
+  --bt-vao: 1.6cqw;
+  --bt-raio: 1.6cqw;
+  --bt-pad: 1.6cqw;
+  --bt-titulo: 2.1cqw;
+  --bt-titulo-grande: 2.6cqw;
+  --bt-legenda: 1.1cqw;
+  --bt-rotulo: 1.1cqw;
+  --bt-compacto: 1.45cqw;
+  --bt-numero: 5cqw;
+  --bt-data: 5.6cqw;
+  --bt-glifo: 12.5cqw;
+  --bt-glifo-p: 2.4cqw;
+  --bt-capa: 7.4cqw;       /* capa do leque */
+  --bt-capa-orbita: 10.5cqw; /* capa da próxima cena (para o mergulho) */
+  --bt-frase: 6cqw;
+}
+.cena-bento .defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+.cena-bento .camada { position: absolute; inset: 0; pointer-events: none; }
+
+/* ── luzes de passagem ── */
+/* o chão de luz da cena anterior continua no corte */
+.cena-bento .chao {
+  opacity: 0;
+  background: radial-gradient(ellipse 95% 120% at 50% 118%,
+    color-mix(in srgb, var(--luz-1) 100%, transparent) 0%,
+    color-mix(in srgb, color-mix(in srgb, var(--luz-1) 70%, var(--luz-2)) 99.5%, transparent) 27%,
+    color-mix(in srgb, color-mix(in srgb, var(--luz-1) 50%, var(--luz-2)) 89.6%, transparent) 40%,
+    color-mix(in srgb, color-mix(in srgb, var(--luz-1) 30%, var(--luz-2)) 65.3%, transparent) 53%,
+    color-mix(in srgb, var(--luz-2) 34.7%, transparent) 67%,
+    color-mix(in srgb, var(--luz-2) 10.4%, transparent) 80%,
+    color-mix(in srgb, var(--luz-2) 0.5%, transparent) 93%,
+    transparent 100%);
+}
+/* a luz da frase (apaga quando a grade nasce) */
+.cena-bento .orbe {
+  opacity: 0;
+  background: radial-gradient(ellipse 58% 54% at 50% 50%,
+    color-mix(in srgb, var(--luz-3) 30%, transparent) 0%,
+    color-mix(in srgb, var(--luz-3) 29.6%, transparent) 10%,
+    color-mix(in srgb, color-mix(in srgb, var(--luz-3) 60%, var(--luz-1)) 27.4%, transparent) 22%,
+    color-mix(in srgb, var(--luz-1) 22%, transparent) 36%,
+    color-mix(in srgb, var(--luz-1) 14%, transparent) 50%,
+    color-mix(in srgb, var(--luz-1) 6.5%, transparent) 64%,
+    color-mix(in srgb, var(--luz-1) 1.6%, transparent) 80%,
+    color-mix(in srgb, var(--luz-1) 0.2%, transparent) 92%,
+    transparent 100%);
+}
+/* a atmosfera da próxima cena: acende por trás da capa no mergulho */
+.cena-bento .nucleo {
+  opacity: 0;
+  background: radial-gradient(ellipse at 50% 50%, color-mix(in srgb, var(--luz-2) 60%, transparent), color-mix(in srgb, var(--luz-2) 22%, transparent) 40%, color-mix(in srgb, var(--luz-2) 6%, transparent) 58%, transparent 70%);
+}
+.cena-bento .vinheta {
+  z-index: 20;
+  background: radial-gradient(ellipse 85% 80% at 50% 50%,
+    transparent 30%,
+    color-mix(in srgb, var(--fundo) 4.2%, transparent) 44%,
+    color-mix(in srgb, var(--fundo) 22.9%, transparent) 58%,
+    color-mix(in srgb, var(--fundo) 49.1%, transparent) 72%,
+    color-mix(in srgb, var(--fundo) 67.8%, transparent) 86%,
+    color-mix(in srgb, var(--fundo) 72%, transparent) 100%);
+}
+
+/* ── a frase ── */
+.cena-bento .bento-frase { z-index: 10; opacity: 0; }
+.cena-bento .frase { font-size: var(--bt-frase); white-space: nowrap; }
+.cena-bento .faisca {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 11;
+  width: 9cqw;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0;
+  background: radial-gradient(closest-side, var(--brilho) 0%, color-mix(in srgb, var(--brilho) 75%, transparent) 12%, color-mix(in srgb, var(--destaque) 34%, transparent) 38%, color-mix(in srgb, var(--destaque) 8%, transparent) 70%, transparent 100%);
+}
+
+/* ── a grade ── */
+.cena-bento .bento {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--bt-largura);
+  height: var(--bt-altura);
+  transform: translate(-50%, -50%);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(0, 1.35fr) repeat(2, minmax(0, 1fr));
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
+  gap: var(--bt-vao);
+  grid-template-areas: 'life form brand exp rev' 'life fut brand comm rev' 'intel lib lives cert career';
+  will-change: transform;
+}
+/* luz de trás: halos grandes e fracos, cobrindo o preto entre os cards (sem borda) */
+.cena-bento .bento-luz {
+  position: absolute;
+  inset: -12% -8%;
+  pointer-events: none;
+  filter: blur(2.4cqw);
+  background:
+    radial-gradient(ellipse 52% 78% at 20% 68%, color-mix(in srgb, var(--luz-4) 40%, transparent) 0%, color-mix(in srgb, var(--luz-4) 37.7%, transparent) 20%, color-mix(in srgb, var(--luz-4) 27.3%, transparent) 40%, color-mix(in srgb, var(--luz-4) 12.7%, transparent) 60%, color-mix(in srgb, var(--luz-4) 2.3%, transparent) 80%, transparent 100%),
+    radial-gradient(ellipse 48% 72% at 82% 30%, color-mix(in srgb, var(--luz-3) 26%, transparent) 0%, color-mix(in srgb, var(--luz-3) 24.4%, transparent) 20%, color-mix(in srgb, var(--luz-3) 17.7%, transparent) 40%, color-mix(in srgb, var(--luz-3) 8.3%, transparent) 60%, color-mix(in srgb, var(--luz-3) 1.5%, transparent) 80%, transparent 100%),
+    radial-gradient(ellipse 62% 86% at 50% 48%, color-mix(in srgb, var(--luz-2) 50%, transparent) 0%, color-mix(in srgb, var(--luz-2) 47%, transparent) 20%, color-mix(in srgb, var(--luz-2) 34%, transparent) 40%, color-mix(in srgb, var(--luz-2) 16%, transparent) 60%, color-mix(in srgb, var(--luz-2) 3%, transparent) 80%, transparent 100%),
+    radial-gradient(ellipse 46% 64% at 64% 86%, color-mix(in srgb, var(--luz-1) 34%, transparent) 0%, color-mix(in srgb, var(--luz-1) 32%, transparent) 20%, color-mix(in srgb, var(--luz-1) 23%, transparent) 40%, color-mix(in srgb, var(--luz-1) 11%, transparent) 60%, color-mix(in srgb, var(--luz-1) 2%, transparent) 80%, transparent 100%),
+    radial-gradient(ellipse 44% 62% at 34% 16%, color-mix(in srgb, var(--luz-4) 30%, transparent) 0%, color-mix(in srgb, var(--luz-4) 28.3%, transparent) 20%, color-mix(in srgb, var(--luz-4) 20.5%, transparent) 40%, color-mix(in srgb, var(--luz-4) 9.5%, transparent) 60%, color-mix(in srgb, var(--luz-4) 1.7%, transparent) 80%, transparent 100%);
+}
+/* a frente de luz que atravessa a grade por trás do vidro (tamanho e degradê vêm do quadro) */
+.cena-bento .onda { position: absolute; left: 0; top: 0; width: 0; height: 0; border-radius: 50%; pointer-events: none; mix-blend-mode: screen; opacity: 0; }
+
+/* Os cards são o material .m-vidro do motor (vidro escuro, luz atrás, fio de borda): aqui só o
+   layout de cada um e a cor da luz (--c1/--c2, nas posições --x/--y). */
+.cena-bento .card {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1cqw;
+  padding: var(--bt-pad);
+  border-radius: var(--bt-raio);
+  color: var(--texto);
+  text-align: center;
+}
+.cena-bento .card h3 {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-weight: var(--titulo-peso);
+  font-size: var(--bt-titulo);
+  line-height: 1.08;
+  letter-spacing: var(--titulo-tracking);
+  white-space: nowrap;
+}
+.cena-bento .legenda {
+  margin: -0.3cqw 0 0;
+  font-family: var(--fonte-texto);
+  font-size: var(--bt-legenda);
+  line-height: 1.35;
+  color: var(--texto-suave);
+  white-space: nowrap;
+}
+.cena-bento .viz { flex: 1; display: grid; place-items: center; width: 100%; min-height: 0; filter: drop-shadow(0 0 0.9cqw color-mix(in srgb, var(--destaque) 55%, transparent)); }
+.cena-bento .icone { display: block; width: 1em; height: 1em; flex: none; overflow: visible; }
+
+/* acesso: o infinito como traço de neon, com a própria luz por trás */
+.cena-bento .c-life { grid-area: life; --x1: 15%; --y1: 95%; --c1: var(--luz-3); --x2: 90%; --y2: 10%; --c2: var(--destaque); }
+.cena-bento .c-life h3 { font-size: var(--bt-titulo-grande); }
+.cena-bento .neon { position: relative; width: var(--bt-glifo); aspect-ratio: 1; }
+.cena-bento .neon .icone { position: absolute; inset: 0; width: 100%; height: 100%; }
+.cena-bento .neon .icone * { stroke: url(#bt-aurora); stroke-width: 1.5; }
+.cena-bento .neon .icone:first-child { filter: blur(0.9cqw); opacity: 0.9; }
+/* caminhos: uma trilha com pontos, o último aceso */
+.cena-bento .c-form { grid-area: form; --x1: 95%; --y1: 100%; --c1: var(--luz-4); --x2: 5%; --y2: 0%; --c2: var(--luz-3); }
+.cena-bento .trilha { width: 12cqw; height: 5cqw; overflow: visible; }
+.cena-bento .trilha path { fill: none; stroke: url(#bt-trilha); stroke-width: 1.6; stroke-linecap: round; }
+.cena-bento .trilha circle { fill: var(--brilho); }
+.cena-bento .trilha circle.ultimo { fill: var(--destaque); }
+/* conteúdo: um leque com três capas */
+.cena-bento .c-fut { grid-area: fut; --x1: 0%; --y1: 100%; --c1: var(--luz-1); --x2: 100%; --y2: 0%; --c2: var(--luz-4); background: none; }
+.cena-bento .fut-vidro { position: absolute; inset: 0; z-index: -2; border-radius: inherit; background: var(--vidro-reflexo), var(--vidro); pointer-events: none; }
+.cena-bento .leque { position: relative; width: 100%; height: 100%; }
+.cena-bento .leque .capa {
+  left: 50%;
+  top: 50%;
+  width: var(--bt-capa);
+  box-shadow: 0 0.52cqw 1.25cqw color-mix(in srgb, var(--fundo) 20%, transparent);
+  transform: translate(-50%, -50%) translateX(var(--fx)) rotate(var(--fr));
+}
+.cena-bento .capa-reflexo {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0;
+  background: linear-gradient(105deg, transparent 38%, color-mix(in srgb, var(--brilho) 70%, transparent) 50%, transparent 62%) no-repeat;
+  background-size: 300% 100%;
+}
+/* encontros: o card de destaque (a cor da marca como superfície) e a onda de uma conversa */
+.cena-bento .c-exp { grid-area: exp; }
+.cena-bento .onda-voz { display: flex; align-items: center; gap: 0.42cqw; height: 5.6cqw; }
+.cena-bento .onda-voz span { width: 0.48cqw; height: var(--h); border-radius: 1cqw; background: linear-gradient(180deg, var(--texto) 0%, color-mix(in srgb, var(--texto) 55%, transparent) 100%); }
+/* comunidade: o número */
+.cena-bento .c-comm { grid-area: comm; justify-content: center; --x1: 50%; --y1: 110%; --c1: var(--luz-4); --x2: 0%; --y2: 0%; --c2: var(--luz-1); }
+.cena-bento .numero { font-family: var(--fonte-titulo); font-size: var(--bt-numero); line-height: 1; letter-spacing: -0.05em; white-space: nowrap; }
+.cena-bento .c-comm .legenda { margin-top: 0.4cqw; }
+/* a data: com o ponto de ao vivo */
+.cena-bento .c-rev { grid-area: rev; justify-content: center; --x1: 50%; --y1: 0%; --c1: var(--destaque); --x2: 100%; --y2: 100%; --c2: var(--luz-3); }
+.cena-bento .ao-vivo { display: inline-flex; align-items: center; gap: 0.7cqw; font-family: var(--fonte-texto); font-size: var(--bt-rotulo); letter-spacing: 0.14em; text-transform: uppercase; color: var(--texto-suave); }
+.cena-bento .ao-vivo::before {
+  content: '';
+  width: 0.7cqw;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--destaque);
+  transform: scale(var(--ponto-s, 1));
+  box-shadow: 0 0 0.8cqw 0.15cqw color-mix(in srgb, var(--destaque) 80%, transparent), var(--ponto-eco, 0 0 0 0 transparent);
+}
+.cena-bento .data { margin-top: 1.4cqw; font-family: var(--fonte-titulo); font-size: var(--bt-data); line-height: 1; letter-spacing: -0.05em; filter: drop-shadow(0 0 0.9cqw color-mix(in srgb, var(--destaque) 55%, transparent)); }
+.cena-bento .c-rev .legenda { margin-top: 1.4cqw; }
+/* o protagonista: o símbolo da marca em luz, no card herói */
+.cena-bento .c-brand { grid-area: brand; --x1: 85%; --y1: 95%; --c1: var(--destaque); --x2: 15%; --y2: 5%; --c2: var(--brilho); --mo: 0.45; }
+.cena-bento .heroi { position: absolute; left: 50%; top: 41%; width: 21cqw; aspect-ratio: 1; transform: translate(-50%, -50%) rotate(-8deg); }
+.cena-bento .heroi > * { position: absolute; inset: 0; }
+.cena-bento .heroi svg { width: 100%; height: 100%; display: block; overflow: visible; }
+/* a luz atrás do símbolo: um núcleo claro e um feixe ao longo do eixo das folhas (sem borda) */
+.cena-bento .heroi-luz {
+  inset: -30%;
+  background:
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--brilho) 75%, transparent) 0%, color-mix(in srgb, var(--luz-3) 45%, transparent) 14%, color-mix(in srgb, var(--luz-3) 14%, transparent) 30%, transparent 48%),
+    linear-gradient(135deg, transparent 38%, color-mix(in srgb, var(--brilho) 22%, transparent) 47%, color-mix(in srgb, var(--brilho) 30%, transparent) 50%, color-mix(in srgb, var(--brilho) 22%, transparent) 53%, transparent 62%);
+  -webkit-mask-image: radial-gradient(circle, #000 30%, transparent 70%);
+  mask-image: radial-gradient(circle, #000 30%, transparent 70%);
+  filter: blur(1.2cqw);
+  mix-blend-mode: screen;
+}
+.cena-bento .heroi-aura { filter: blur(2.4cqw); opacity: 0.8; }
+.cena-bento .heroi-aura path { fill: color-mix(in srgb, var(--destaque) 80%, var(--luz-3)); }
+/* o corpo: vidro claro (o degradê do símbolo, translúcido sobre a luz) com fio de luz na borda */
+.cena-bento .heroi-corpo { mix-blend-mode: screen; opacity: 0.95; filter: drop-shadow(0 0 1.2cqw color-mix(in srgb, var(--brilho) 45%, transparent)); }
+.cena-bento .heroi-corpo path { fill: url(#bt-simbolo); stroke: color-mix(in srgb, var(--brilho) 70%, transparent); stroke-width: 0.45; }
+.cena-bento .heroi-reflexo path { fill: url(#bt-reflexo); }
+.cena-bento .heroi-reflexo { mix-blend-mode: screen; }
+.cena-bento .heroi-marca {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25cqw;
+  font-size: 2.6cqw;
+  line-height: 1;
+  color: var(--texto);
+  white-space: nowrap;
+}
+.cena-bento .heroi-marca .ha { font-family: var(--fonte-titulo); font-weight: var(--marca-a-peso, 400); letter-spacing: -0.035em; }
+.cena-bento .heroi-marca .hb { font-family: var(--fonte-marca); font-weight: var(--marca-b-peso, 500); font-size: 0.88em; letter-spacing: -0.01em; }
+.cena-bento .heroi-marca svg { width: 0.95em; height: 0.95em; display: block; }
+/* os pequenos, cada um no seu card */
+.cena-bento .mini { justify-content: center; gap: 0.9cqw; }
+.cena-bento .mini .icone { width: var(--bt-glifo-p); height: var(--bt-glifo-p); filter: drop-shadow(0 0 0.9cqw color-mix(in srgb, var(--destaque) 55%, transparent)); }
+.cena-bento .mini .icone * { stroke: url(#bt-aurora); stroke-width: 1.3; }
+.cena-bento .mini h3 { font-size: var(--bt-compacto); }
+.cena-bento .c-intel { grid-area: intel; }
+.cena-bento .c-lib { grid-area: lib; --x1: 50%; --y1: 100%; --c1: var(--luz-4); }
+.cena-bento .c-lives { grid-area: lives; --x1: 50%; --y1: 110%; --c1: var(--luz-3); }
+.cena-bento .c-lives .ao-vivo { font-size: var(--bt-compacto); letter-spacing: -0.02em; text-transform: none; color: var(--texto); }
+.cena-bento .c-cert { grid-area: cert; --x1: 50%; --y1: 0%; --c1: var(--brilho); --mo: 0.35; }
+.cena-bento .c-career { grid-area: career; --x1: 100%; --y1: 100%; --c1: var(--luz-1); }
+/* o card de destaque (.m-vidro-forte): traços na cor do texto, sem brilho */
+.cena-bento .forte .viz, .cena-bento .forte .icone { filter: none; }
+.cena-bento .forte .icone * { stroke: var(--texto); }
+.cena-bento .forte .legenda { color: color-mix(in srgb, var(--texto) 75%, transparent); }
+.cena-bento .grad {
+  background-image: var(--destaque-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  padding-bottom: 0.08em;
+}
+
+/* ── 9:16 (em pé) ───────────────────────────────────────────────────────────────────────────────
+   A frase quebra em duas linhas no centro da área segura e o bento vira uma grade alta de 3
+   colunas: o card herói é o protagonista na coluna do meio (seis linhas), com o card das capas em
+   cima e o ao vivo embaixo; o infinito e os caminhos à esquerda; encontros, data e número à
+   direita; os pequenos fecham a última faixa. Dentro de cada card o texto é maior que no 16:9 em
+   pixels, para ler no celular. A grade ocupa a área segura: 12–80 % da altura, 87 % da largura. */
+[data-formato="9x16"] .cena-bento {
+  --bt-frase: calc(6cqw * 2.25);
+  --bt-vao: calc(1.6cqw * 1.125);
+  --bt-raio: calc(1.6cqw * 1.6);
+  --bt-titulo: calc(2.1cqw * 1.95);
+  --bt-titulo-grande: calc(2.6cqw * 1.85);
+  --bt-legenda: calc(1.1cqw * 2.2);
+  --bt-rotulo: calc(1.1cqw * 1.9);
+  --bt-compacto: calc(1.45cqw * 2.05);
+  --bt-numero: calc(5cqw * 1.8);
+  --bt-data: calc(5.6cqw * 1.8);
+  --bt-glifo: calc(12.5cqw * 1.7);
+  --bt-glifo-p: calc(2.4cqw * 1.55);
+  --bt-capa: calc(7.4cqw * 1.75);
+}
+[data-formato="9x16"] .cena-bento .frase .destaque { display: block; width: fit-content; margin-inline: auto; }
+/* a frase sobe um pouco (centro da área segura) e a luz dela fica centrada nela, quase redonda */
+[data-formato="9x16"] .cena-bento .bento-frase { bottom: 8%; }
+[data-formato="9x16"] .cena-bento .orbe { top: 13.75%; bottom: auto; height: 64.5%; }
+[data-formato="9x16"] .cena-bento .faisca { width: 16cqw; }
+/* o chão da cena anterior fica embaixo da frase, sem lavar o quadro em pé inteiro */
+[data-formato="9x16"] .cena-bento .chao { top: 42%; }
+[data-formato="9x16"] .cena-bento .bento {
+  top: 46%;
+  width: 87cqw;
+  height: 121cqw;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.18fr) minmax(0, 1fr);
+  grid-template-rows: repeat(9, minmax(0, 1fr));
+  grid-template-areas: 'life fut exp' 'life fut exp' 'life brand rev' 'life brand rev' 'form brand rev' 'form brand comm' 'form brand comm' 'intel brand cert' 'lib lives career';
+}
+/* o mesmo vidro em pixels: desfoque de trás e luz própria maiores em cqw */
+[data-formato="9x16"] .cena-bento .card {
+  gap: 1.5cqw;
+  padding: calc(1.6cqw * 1.45) calc(1.6cqw * 0.85);
+  -webkit-backdrop-filter: blur(3.9cqw) saturate(1.35);
+  backdrop-filter: blur(3.9cqw) saturate(1.35);
+}
+[data-formato="9x16"] .cena-bento .card.m-vidro-forte { -webkit-backdrop-filter: none; backdrop-filter: none; }
+[data-formato="9x16"] .cena-bento .card::before { filter: blur(3.5cqw) saturate(0.7); }
+[data-formato="9x16"] .cena-bento .legenda { margin-top: -0.5cqw; }
+[data-formato="9x16"] .cena-bento .viz { filter: drop-shadow(0 0 1.6cqw color-mix(in srgb, var(--destaque) 55%, transparent)); }
+[data-formato="9x16"] .cena-bento .forte .viz { filter: none; }
+[data-formato="9x16"] .cena-bento .trilha { width: 21cqw; height: 8.75cqw; }
+[data-formato="9x16"] .cena-bento .leque .capa { border-radius: calc(var(--raio-capa) * 1.78); box-shadow: 0 0.9cqw 2.2cqw color-mix(in srgb, var(--fundo) 20%, transparent); }
+[data-formato="9x16"] .cena-bento .onda-voz { gap: 0.75cqw; height: 10cqw; }
+[data-formato="9x16"] .cena-bento .onda-voz span { width: 0.85cqw; border-radius: 1.8cqw; }
+[data-formato="9x16"] .cena-bento .c-comm .legenda { margin-top: 0.7cqw; }
+[data-formato="9x16"] .cena-bento .ao-vivo { gap: 1.2cqw; }
+[data-formato="9x16"] .cena-bento .ao-vivo::before { width: 1.25cqw; box-shadow: 0 0 1.4cqw 0.27cqw color-mix(in srgb, var(--destaque) 80%, transparent), var(--ponto-eco, 0 0 0 0 transparent); }
+[data-formato="9x16"] .cena-bento .data { margin-top: 2.5cqw; filter: drop-shadow(0 0 1.6cqw color-mix(in srgb, var(--destaque) 55%, transparent)); }
+[data-formato="9x16"] .cena-bento .c-rev .legenda { margin-top: 2.5cqw; }
+[data-formato="9x16"] .cena-bento .mini { gap: 1.3cqw; padding-block: 1.6cqw; }
+[data-formato="9x16"] .cena-bento .mini .icone { filter: drop-shadow(0 0 1.6cqw color-mix(in srgb, var(--destaque) 55%, transparent)); }
+[data-formato="9x16"] .cena-bento .forte .icone { filter: none; }
+[data-formato="9x16"] .cena-bento .heroi { top: 44%; width: 40cqw; }
+[data-formato="9x16"] .cena-bento .heroi-aura { filter: blur(4.4cqw); }
+[data-formato="9x16"] .cena-bento .heroi-luz { filter: blur(2.2cqw); }
+[data-formato="9x16"] .cena-bento .heroi-corpo { filter: drop-shadow(0 0 2.2cqw color-mix(in srgb, var(--brilho) 45%, transparent)); }
+[data-formato="9x16"] .cena-bento .heroi-marca { font-size: calc(2.6cqw * 1.6); gap: 0.45cqw; }
+/* luz de trás: maior que a grade e recortada por uma elipse que se apaga devagar até zero antes da
+   borda da caixa (nenhuma aresta reta no alto ou embaixo) */
+[data-formato="9x16"] .cena-bento .bento-luz {
+  inset: -22% -18%;
+  -webkit-mask-image: radial-gradient(closest-side, #000 38%, rgba(0,0,0,.72) 58%, rgba(0,0,0,.34) 76%, rgba(0,0,0,.09) 90%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 38%, rgba(0,0,0,.72) 58%, rgba(0,0,0,.34) 76%, rgba(0,0,0,.09) 90%, transparent 100%);
+}

@@ -1,0 +1,94 @@
+{
+  "versao": 1,
+  "nota": "Catálogo das transições do motor. modo 'sobreposta' = as duas cenas tocam juntas por 'dur' segundos; 'encadeada' = corte seco no meio, com 'antes' s mexendo na cena que sai e 'depois' s na que entra. Os textos 'sai' e 'entra' alimentam o storyboard; {chaves} são trocadas pelos números.",
+  "transicoes": {
+    "corte": {
+      "modo": "encadeada", "antes": 0, "depois": 0, "opcoes": {},
+      "sai": "Corte seco.",
+      "entra": "Entra num corte seco."
+    },
+    "corte-no-eixo": {
+      "modo": "encadeada", "antes": 0.1, "depois": 0.3,
+      "opcoes": { "forca": 0.006, "desfoque": 0.42, "K": 2.2, "tau": 0.17 },
+      "sai": "Corte seco no mesmo eixo, em movimento: a câmera dá um push que acelera até o último quadro, com micro-desfoque ({antes} s).",
+      "entra": "Nasce no mesmo eixo da anterior, herdando o embalo do push, com um respiro de foco."
+    },
+    "avancar-desfocar": {
+      "modo": "encadeada", "antes": 0.24, "depois": 0.3,
+      "opcoes": { "avanco": 0.07, "desfoque": 0.8 },
+      "sai": "O quadro inteiro avança {avancoPct} para a câmera, desfoca e apaga em {antes} s.",
+      "entra": "Nasce do desfoque, no mesmo eixo, continuando o avanço da anterior ({depois} s)."
+    },
+    "esmaecer": {
+      "modo": "sobreposta", "dur": 0.4,
+      "opcoes": { "cor": "var(--fundo)" },
+      "sai": "Esmaece por igual até o fundo, sem forma, em {dur} s.",
+      "entra": "Aparece do fundo, por igual, sem forma."
+    },
+    "dissolver": {
+      "modo": "sobreposta", "dur": 0.3,
+      "opcoes": { "desfoque": 0, "escala": 0 },
+      "sai": "Funde na próxima em {dur} s.",
+      "entra": "Entra fundindo sobre a anterior."
+    },
+    "empurrar": {
+      "modo": "sobreposta", "dur": 0.5,
+      "opcoes": { "direcao": "esquerda" },
+      "sai": "A próxima empurra esta para {direcaoTexto}, na mesma velocidade, com rastro de movimento ({dur} s).",
+      "entra": "Chega empurrando a anterior, com rastro de movimento."
+    },
+    "chicote": {
+      "modo": "sobreposta", "dur": 0.3,
+      "opcoes": { "direcao": "esquerda" },
+      "sai": "Chicote: a câmera passa rápida para {direcaoTexto}, o meio vira rastro, e chega sem passar do ponto ({dur} s).",
+      "entra": "Chega no fim de um chicote de câmera, assentando em curva forte."
+    },
+    "mergulho": {
+      "modo": "sobreposta", "dur": 0.75,
+      "opcoes": { "alvo": null, "ponte": null, "antecipacao": 0.2, "recuo": 0.025, "escurecer": 0.4, "cobrir": 1.15 },
+      "sai": "Antecipação: o resto recua e escurece; a câmera mergulha {alvoTexto} com zoom em log e ele vira o primeiro quadro da próxima ({dur} s).",
+      "entra": "Nasce de dentro do mergulho da anterior, ainda com embalo."
+    },
+    "ponte": {
+      "modo": "sobreposta", "dur": 0.6,
+      "opcoes": { "nome": null, "arco": 0 },
+      "sai": "O elemento \"{nome}\" atravessa a fronteira: a câmera leva o lugar dele aqui até o lugar dele na próxima, enquanto o resto se funde ({dur} s).",
+      "entra": "Recebe o elemento \"{nome}\" da anterior, no tamanho e no lugar exatos."
+    },
+    "ponto-de-luz": {
+      "modo": "sobreposta", "dur": 0.5,
+      "opcoes": { "ponto": null, "ponte": null, "cor": "var(--luz-1, var(--destaque, #fff))" },
+      "sai": "Tudo converge para um ponto e vira um ponto de luz macio, que apaga ({dur} s).",
+      "entra": "Acende a partir do ponto de luz em que a anterior terminou."
+    },
+    "atravessar": {
+      "modo": "sobreposta", "dur": 0.5,
+      "opcoes": { "ate": 4 },
+      "sai": "A câmera atravessa a composição: tudo passa rente e sai pelas bordas, desfocado ({dur} s).",
+      "entra": "Aparece depois que a câmera atravessa a anterior."
+    },
+    "flash": {
+      "modo": "encadeada", "antes": 0.07, "depois": 0.25,
+      "opcoes": { "cor": "var(--texto, #fff)", "forca": 0.85 },
+      "sai": "A luz sobe em poucos quadros até o corte (flash, sem ataque seco).",
+      "entra": "Nasce dentro do flash, que se dissolve em {depois} s."
+    },
+    "lamina-de-luz": {
+      "modo": "sobreposta", "dur": 0.6,
+      "opcoes": { "angulo": 100, "cor": "var(--luz-1, var(--destaque, #fff))", "largura": 16, "suavidade": 16, "forca": 0.42 },
+      "sai": "O texto apaga e uma luz larga, sem borda, varre o quadro; a próxima aparece presa a ela ({dur} s).",
+      "entra": "Aparece por trás de uma lâmina de luz que varre o quadro."
+    },
+    "iris": {
+      "modo": "sobreposta", "dur": 0.5,
+      "opcoes": { "ponto": null },
+      "sai": "Revelação radial muito esfumada a partir de um ponto ({dur} s).",
+      "entra": "Abre de um ponto, muito esfumado."
+    },
+    "na-cena": {
+      "modo": "encadeada", "antes": 0, "depois": 0, "opcoes": {},
+      "sai": "A própria cena coreografa a passagem.",
+      "entra": "Continua o gesto da cena anterior."
+    }
+  }
+}
