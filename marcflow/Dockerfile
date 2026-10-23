@@ -18,7 +18,8 @@ RUN npm prune --omit=dev && npm install --no-save tsx typescript
 
 # Production image
 FROM node:26-alpine AS runner
-RUN apk add --no-cache openssl ca-certificates
+# ffmpeg: voice notes are transcoded to Ogg/Opus
+RUN apk add --no-cache openssl ca-certificates ffmpeg
 WORKDIR /app
 
 COPY --from=builder /app/package*.json ./
@@ -35,4 +36,4 @@ ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx prisma db push && (if [ -n \"$ADMIN_EMAIL\"] && [ -n \"$ADMIN_PASSWORD\"]; then node scripts/setup-admin.js \"$ADMIN_EMAIL\" \"$ADMIN_PASSWORD\"; fi) && node node_modules/tsx/dist/cli.mjs src/server/index.ts"]
+CMD ["sh", "-c", "npx prisma db push && (if [ -n \"$ADMIN_EMAIL\" ] && [ -n \"$ADMIN_PASSWORD\" ]; then node scripts/setup-admin.js \"$ADMIN_EMAIL\" \"$ADMIN_PASSWORD\"; fi) && node node_modules/tsx/dist/cli.mjs src/server/index.ts"]
