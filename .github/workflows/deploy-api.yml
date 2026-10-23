@@ -25,5 +25,4 @@ jobs:
             git pull origin main
             docker compose -f docker-compose.prod.yml --env-file deploy/.env.prod build --no-cache api
             docker compose -f docker-compose.prod.yml --env-file deploy/.env.prod up -d
-            docker compose -f docker-compose.prod.yml exec -T api npx prisma migrate deploy --schema=./prisma/schema.prisma
             echo "✓ Deploy concluído"
