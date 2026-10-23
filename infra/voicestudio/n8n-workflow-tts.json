@@ -1,0 +1,60 @@
+{
+  "name": "VoiceStudio - Texto para Voz",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tts",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "a1f0c6c2-0001-4a4e-9a01-000000000001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "voicestudio-tts"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.VOICESTUDIO_URL }}/v1/audio/speech",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $env.VOICESTUDIO_KEY }}" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'omnivoice', input: $json.body.texto, voice: $json.body.voz || 'default', response_format: 'mp3', language: $json.body.idioma || 'pt' }) }}",
+        "options": {
+          "response": { "response": { "responseFormat": "file", "outputPropertyName": "audio" } },
+          "timeout": 300000
+        }
+      },
+      "id": "a1f0c6c2-0002-4a4e-9a01-000000000002",
+      "name": "Gerar áudio (VoiceStudio)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [260, 0]
+    },
+    {
+      "parameters": {
+        "respondWith": "binary",
+        "inputDataFieldName": "audio",
+        "options": {}
+      },
+      "id": "a1f0c6c2-0003-4a4e-9a01-000000000003",
+      "name": "Devolver MP3",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [520, 0]
+    }
+  ],
+  "connections": {
+    "Webhook": { "main": [[{ "node": "Gerar áudio (VoiceStudio)", "type": "main", "index": 0 }]] },
+    "Gerar áudio (VoiceStudio)": { "main": [[{ "node": "Devolver MP3", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

@@ -1,0 +1,75 @@
+# VoiceStudio: servidor de voz sem tela (NVIDIA GPU) + n8n opcional
+#
+#   Só VoiceStudio:      docker compose up -d
+#   VoiceStudio + n8n:   docker compose --profile n8n up -d
+#
+# A porta 3900 fica presa ao 127.0.0.1 do servidor: ninguém de fora acessa.
+# O n8n fala com o VoiceStudio pela rede interna em http://voicestudio:3900.
+
+services:
+  voicestudio:
+    # Versão fixa. Para atualizar, troque a tag e rode:
+    #   docker compose pull && docker compose up -d
+    image: ghcr.io/debpalash/voicestudio:${VOICESTUDIO_TAG:-0.5.6}
+    container_name: voicestudio
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3900:3900"
+    volumes:
+      # Banco, vozes clonadas, configurações e modelos (Hugging Face cache)
+      - voicestudio-data:/app/omnivoice_data
+    environment:
+      OMNIVOICE_API_KEY: ${OMNIVOICE_API_KEY:?defina OMNIVOICE_API_KEY no arquivo .env}
+      OMNIVOICE_DATA_DIR: /app/omnivoice_data
+      HF_HOME: /app/omnivoice_data/huggingface
+      HF_TOKEN: ${HF_TOKEN:-}
+      OMNIVOICE_SERVER_MODE: "1"
+      # Nome usado pelo n8n na rede interna
+      OMNIVOICE_ALLOWED_HOSTS: voicestudio
+      # Desliga a telemetria por completo
+      OMNIVOICE_ANALYTICS_DISABLED: "1"
+      PYTHONUNBUFFERED: "1"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:3900/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 180s
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks: [voice-net]
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:${N8N_TAG:-latest}
+    container_name: n8n
+    profiles: ["n8n"]
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5678:5678"
+    environment:
+      GENERIC_TIMEZONE: ${TZ:-America/Sao_Paulo}
+      TZ: ${TZ:-America/Sao_Paulo}
+      N8N_HOST: ${N8N_HOST:-localhost}
+      WEBHOOK_URL: ${N8N_WEBHOOK_URL:-http://localhost:5678/}
+      # Disponível nos workflows como {{ $env.VOICESTUDIO_URL }} e {{ $env.VOICESTUDIO_KEY }}
+      VOICESTUDIO_URL: http://voicestudio:3900
+      VOICESTUDIO_KEY: ${OMNIVOICE_API_KEY}
+      N8N_BLOCK_ENV_ACCESS_IN_NODE: "false"
+    volumes:
+      - n8n-data:/home/node/.n8n
+    depends_on:
+      voicestudio:
+        condition: service_healthy
+    networks: [voice-net]
+
+networks:
+  voice-net:
+
+volumes:
+  voicestudio-data:
+  n8n-data:
