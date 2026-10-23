@@ -1,0 +1,24 @@
+{
+  "name": "ecopulse",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ECOPULSE — Supabase CLI e configuração local",
+  "scripts": {
+    "supabase": "supabase",
+    "sb:login": "supabase login",
+    "sb:link": "supabase link",
+    "sb:start": "supabase start",
+    "sb:stop": "supabase stop",
+    "sb:migration:new": "supabase migration new",
+    "sb:db:push": "supabase db push",
+    "sb:db:pull": "supabase db pull",
+    "sb:types": "supabase gen types typescript --linked > supabase/types.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clikcriative-org/EcoPulse.git"
+  },
+  "devDependencies": {
+    "supabase": "^2.121.0"
+  }
+}
