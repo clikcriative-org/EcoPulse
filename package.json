@@ -1,0 +1,32 @@
+{
+  "name": "ecopulse",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ECOPULSE — A plataforma completa de gestão de igrejas",
+  "author": "EcoPulse",
+  "license": "UNLICENSED",
+  "packageManager": "pnpm@9.1.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "test:e2e": "turbo test:e2e",
+    "db:migrate": "pnpm --filter @ecopulse/api prisma migrate dev",
+    "db:push": "pnpm --filter @ecopulse/api prisma db push",
+    "db:seed": "pnpm --filter @ecopulse/api prisma db seed",
+    "db:studio": "pnpm --filter @ecopulse/api prisma studio",
+    "clean": "turbo clean && rm -rf node_modules",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\""
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "prettier": "^3.3.0",
+    "turbo": "^2.0.0",
+    "typescript": "^5.5.0"
+  }
+}

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>ECOPULSE — Mapa do Sistema</title>
+  <style>
+    @page { size: A4; margin: 20mm; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1a1a2e; line-height: 1.5; padding: 40px; max-width: 1100px; margin: 0 auto; }
+    h1 { font-size: 28px; color: #059669; margin-bottom: 5px; }
+    h2 { font-size: 20px; color: #1a1a2e; margin-top: 40px; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #059669; }
+    h3 { font-size: 16px; color: #374151; margin-top: 20px; margin-bottom: 10px; }
+    .subtitle { color: #6b7280; font-size: 14px; margin-bottom: 30px; }
+    .header { text-align: center; margin-bottom: 50px; padding: 30px; background: linear-gradient(135deg, #ecfdf5, #f0fdf4); border-radius: 12px; border: 1px solid #a7f3d0; }
+    .header h1 { font-size: 36px; margin-bottom: 8px; }
+    pre { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; font-size: 11px; font-family: 'JetBrains Mono', 'Fira Code', monospace; overflow-x: auto; line-height: 1.4; margin: 15px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 13px; }
+    th { background: #059669; color: white; padding: 10px 12px; text-align: left; font-weight: 600; }
+    td { padding: 8px 12px; border-bottom: 1px solid #e5e7eb; }
+    tr:nth-child(even) td { background: #f9fafb; }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 15px 0; }
+    .card { border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px; }
+    .card h4 { font-size: 14px; color: #059669; margin-bottom: 8px; }
+    .card ul { font-size: 12px; color: #4b5563; padding-left: 18px; }
+    .card ul li { margin-bottom: 3px; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+    .badge-green { background: #d1fae5; color: #065f46; }
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+    .badge-purple { background: #ede9fe; color: #5b21b6; }
+    .badge-yellow { background: #fef3c7; color: #92400e; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 15px 0; }
+    .stat { text-align: center; padding: 15px; background: #f0fdf4; border-radius: 8px; border: 1px solid #a7f3d0; }
+    .stat .number { font-size: 28px; font-weight: 700; color: #059669; }
+    .stat .label { font-size: 11px; color: #6b7280; margin-top: 4px; }
+    .page-break { page-break-before: always; }
+    .footer { text-align: center; margin-top: 50px; padding: 20px; color: #9ca3af; font-size: 12px; border-top: 1px solid #e5e7eb; }
+  </style>
+</head>
+<body>
+
+<!-- CAPA -->
+<div class="header">
+  <h1>🌿 ECOPULSE</h1>
+  <p class="subtitle">Plataforma Completa de Gestão de Igrejas</p>
+  <p style="color:#374151; font-size:13px;">Documento Técnico — Estrutura, Módulos e Arquitetura</p>
+  <p style="color:#9ca3af; font-size:12px; margin-top:10px;">Versão 1.0 — Junho 2026</p>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="number">130+</div><div class="label">Arquivos</div></div>
+  <div class="stat"><div class="number">8</div><div class="label">Módulos API</div></div>
+  <div class="stat"><div class="number">20+</div><div class="label">Páginas Web</div></div>
+  <div class="stat"><div class="number">30+</div><div class="label">Models DB</div></div>
+</div>
+
+<!-- ARQUITETURA -->
+<h2>1. Arquitetura Geral</h2>
+<pre>
+┌─────────────────────────────────────────────────────────────────────┐
+│                         ECOPULSE PLATFORM                            │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│   ┌──────────────┐    ┌──────────────┐    ┌──────────────┐         │
+│   │   VERCEL     │    │  VPS Docker  │    │   Externos   │         │
+│   │              │    │              │    │              │         │
+│   │  Dashboard   │───▶│   API REST   │◀──▶│  WhatsApp    │         │
+│   │  Next.js 14  │    │   NestJS 10  │    │  Pix Gateway │         │
+│   │              │    │              │    │  SMTP Email  │         │
+│   │  Portal WiFi │    │  PostgreSQL  │    │  S3 Storage  │         │
+│   │  Next.js 14  │    │  Redis       │    │              │         │
+│   └──────────────┘    └──────────────┘    └──────────────┘         │
+│                                                                      │
+└─────────────────────────────────────────────────────────────────────┘
+</pre>
+
+<!-- STACK -->
+<h2>2. Stack Tecnológica</h2>
+<table>
+  <tr><th>Camada</th><th>Tecnologia</th><th>Versão</th></tr>
+  <tr><td>Monorepo</td><td>pnpm + Turborepo</td><td>9.x</td></tr>
+  <tr><td>Frontend</td><td>Next.js (App Router) + Tailwind CSS</td><td>14.2</td></tr>
+  <tr><td>Backend</td><td>NestJS + Prisma ORM</td><td>10.3</td></tr>
+  <tr><td>Banco de Dados</td><td>PostgreSQL</td><td>16</td></tr>
+  <tr><td>Cache/Queue</td><td>Redis + BullMQ</td><td>7</td></tr>
+  <tr><td>Auth</td><td>JWT + Refresh Tokens + RBAC</td><td>—</td></tr>
+  <tr><td>Real-time</td><td>Socket.io</td><td>4.7</td></tr>
+  <tr><td>Deploy Frontend</td><td>Vercel</td><td>—</td></tr>
+  <tr><td>Deploy API</td><td>Docker + VPS Hostinger</td><td>—</td></tr>
+  <tr><td>CI/CD</td><td>GitHub Actions</td><td>—</td></tr>
+  <tr><td>SSL</td><td>Let's Encrypt + Certbot</td><td>—</td></tr>
+</table>
+
+<div class="page-break"></div>
+
+<!-- MÓDULOS -->
+<h2>3. Módulos do Sistema</h2>
+
+<div class="grid">
+  <div class="card">
+    <h4>🔐 Auth & Perfis</h4>
+    <ul>
+      <li>Login / Register</li>
+      <li>JWT + Refresh Token</li>
+      <li>6 Roles hierárquicas (RBAC)</li>
+      <li>Multi-tenant isolation</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>👥 Gestão de Pessoas</h4>
+    <ul>
+      <li>CRUD membros completo</li>
+      <li>Busca, filtros, paginação</li>
+      <li>Perfil com relacionamentos</li>
+      <li>Aniversariantes do mês</li>
+      <li>Tags e segmentação</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>👶 RNO Kids</h4>
+    <ul>
+      <li>Cadastro crianças + responsável</li>
+      <li>Check-in com código 6 caracteres</li>
+      <li>Check-out validado</li>
+      <li>Alergias e observações médicas</li>
+      <li>Dashboard em tempo real</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>💜 Ministérios & Voluntários</h4>
+    <ul>
+      <li>CRUD ministérios com cores</li>
+      <li>Gestão de voluntários</li>
+      <li>3 papéis: Líder, Coordenador, Voluntário</li>
+      <li>Função específica (ex: Guitarrista)</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>🏠 Grupos & Células</h4>
+    <ul>
+      <li>4 tipos: Célula, Discipulado, Ministério, Curso</li>
+      <li>Dia/horário da reunião</li>
+      <li>Endereço e capacidade</li>
+      <li>Membros com papéis (Líder, Anfitrião)</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>💬 Comunicação</h4>
+    <ul>
+      <li>WhatsApp, E-mail, SMS</li>
+      <li>Templates com variáveis dinâmicas</li>
+      <li>Envio em lote</li>
+      <li>Histórico + status tracking</li>
+      <li>Notificações in-app</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>💰 Doações (RNO Pay)</h4>
+    <ul>
+      <li>Dízimos, Ofertas, Especial</li>
+      <li>Pix, Cartão, Transferência, Dinheiro</li>
+      <li>Campanhas com meta + progresso</li>
+      <li>Dashboard financeiro</li>
+      <li>Crescimento mês a mês</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>🎓 Escola (RNO School)</h4>
+    <ul>
+      <li>Cursos com categorias</li>
+      <li>Aulas ordenadas</li>
+      <li>Matrículas + progresso</li>
+      <li>Geração de certificados</li>
+      <li>Presencial, Online, Híbrido</li>
+    </ul>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ENDPOINTS -->
+<h2>4. API — Endpoints (60+)</h2>
+
+<h3>Auth</h3>
+<table>
+  <tr><th>Método</th><th>Rota</th><th>Descrição</th></tr>
+  <tr><td><span class="badge badge-green">POST</span></td><td>/auth/register</td><td>Registrar tenant + admin</td></tr>
+  <tr><td><span class="badge badge-green">POST</span></td><td>/auth/login</td><td>Login → JWT + refresh</td></tr>
+  <tr><td><span class="badge badge-green">POST</span></td><td>/auth/refresh</td><td>Renovar access token</td></tr>
+  <tr><td><span class="badge badge-green">POST</span></td><td>/auth/logout</td><td>Revogar refresh token</td></tr>
+  <tr><td><span class="badge badge-blue">GET</span></td><td>/auth/me</td><td>Dados do usuário logado</td></tr>
+</table>
+
+<h3>Members</h3>
+<table>
+  <tr><th>Método</th><th>Rota</th><th>Descrição</th></tr>
+  <tr><td><span class="badge badge-blue">GET</span></td><td>/members</td><td>Listar (busca + filtros + paginação)</td></tr>
+  <tr><td><span class="badge badge-blue">GET</span></td><td>/members/stats</td><td>Estatísticas</td></tr>
+  <tr><td><span class="badge badge-blue">GET</span></td><td>/members/birthdays</td><td>Aniversariantes</td></tr>
+  <tr><td><span class="badge badge-blue">GET</span></td><td>/members/:id</td><td>Perfil completo</td></tr>
+  <tr><td><span class="badge badge-green">POST</span></td><td>/members</td><td>Cadastrar</td></tr>
+  <tr><td><span class="badge badge-yellow">PATCH</span></td><td>/members/:id</td><td>Atualizar</td></tr>
+  <tr><td><span class="badge badge-purple">DELETE</span></td><td>/members/:id</td><td>Desativar</td></tr>
+</table>
+
+<h3>Kids</h3>
+<table>
+  <tr><th>Método</th><th>Rota</th><th>Descrição</th></tr>
+  <tr><td><span class="badge badge-blue">GET</span></td><td>/kids/children</td><td>Listar crianças</td></tr>
+  <tr><td><span class="badge badge-green">POST</span></td><td>/kids/children</td><td>Cadastrar</td></tr>
+  <tr><td><span class="badge badge-green">POST</span></td><td>/kids/checkin</td><td>Check-in → código segurança</td></tr>
+  <tr><td><span class="badge badge-green">POST</span></td><td>/kids/checkout/:id</td><td>Check-out (valida código)</td></tr>
+  <tr><td><span class="badge badge-blue">GET</span></td><td>/kids/active</td><td>Crianças presentes agora</td></tr>
+  <tr><td><span class="badge badge-blue">GET</span></td><td>/kids/stats</td><td>Estatísticas</td></tr>
+</table>
+
+<h3>Ministries, Groups, Communication, Donations, School</h3>
+<p style="font-size:13px; color:#6b7280;">Todos seguem o mesmo padrão REST com CRUD + stats + sub-recursos. Total: 60+ endpoints documentados no Swagger (<code>/docs</code>).</p>
+
+<div class="page-break"></div>
+
+<!-- ROLES -->
+<h2>5. Roles & Permissões</h2>
+
+<table>
+  <tr><th>Role</th><th>Acesso</th><th>Exemplo</th></tr>
+  <tr><td>SUPER_ADMIN</td><td>Tudo + gestão de planos</td><td>Dono da plataforma</td></tr>
+  <tr><td>PASTOR</td><td>Tudo dentro do tenant</td><td>Pastor titular</td></tr>
+  <tr><td>ADMIN</td><td>Gestão operacional</td><td>Secretário(a)</td></tr>
+  <tr><td>LEADER</td><td>Seu ministério/grupo</td><td>Líder de célula</td></tr>
+  <tr><td>VOLUNTEER</td><td>Acesso ao ministério</td><td>Voluntário</td></tr>
+  <tr><td>MEMBER</td><td>Apenas visualização</td><td>Membro comum</td></tr>
+</table>
+
+<!-- PLANOS -->
+<h2>6. Planos de Assinatura</h2>
+
+<div class="grid" style="grid-template-columns: repeat(3, 1fr);">
+  <div class="card" style="border-color:#a7f3d0;">
+    <h4 style="text-align:center;">START</h4>
+    <p style="text-align:center; font-size:22px; font-weight:700; color:#059669;">R$ 99/mês</p>
+    <ul>
+      <li>300 membros</li>
+      <li>3 usuários</li>
+      <li>5 ministérios</li>
+      <li>Gestão central</li>
+      <li>Kids básico</li>
+      <li>Doações</li>
+    </ul>
+  </div>
+  <div class="card" style="border-color:#059669; border-width:2px;">
+    <h4 style="text-align:center;">ADVANCE ⭐</h4>
+    <p style="text-align:center; font-size:22px; font-weight:700; color:#059669;">R$ 199/mês</p>
+    <ul>
+      <li>1.000 membros</li>
+      <li>10 usuários</li>
+      <li>20 ministérios</li>
+      <li>+ Células & Líderes</li>
+      <li>+ WhatsApp & Email</li>
+      <li>+ Escola & Trilhas</li>
+      <li>+ Automações</li>
+    </ul>
+  </div>
+  <div class="card" style="border-color:#a7f3d0;">
+    <h4 style="text-align:center;">PRO</h4>
+    <p style="text-align:center; font-size:22px; font-weight:700; color:#059669;">R$ 399/mês</p>
+    <ul>
+      <li>10.000 membros</li>
+      <li>50 usuários</li>
+      <li>100 ministérios</li>
+      <li>+ App personalizado</li>
+      <li>+ Multi-sede</li>
+      <li>+ Chatbot IA</li>
+      <li>+ Suporte VIP</li>
+    </ul>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- BANCO -->
+<h2>7. Banco de Dados — Relações</h2>
+<pre>
+                    ┌──────────┐
+                    │  TENANT  │ ← Multi-tenant root
+                    └────┬─────┘
+                         │ 1:N
+        ┌────────────────┼────────────────────────────┐
+        │                │                            │
+   ┌────▼────┐     ┌────▼────┐              ┌───────▼───────┐
+   │  USER   │     │  MEMBER │              │   VISITOR     │
+   │ (login) │     │ (pessoa)│              │  (wifi crm)   │
+   └─────────┘     └────┬────┘              └───────┬───────┘
+                         │                           │
+          ┌──────────────┼──────────────┐            │
+          │              │              │            │
+    ┌─────▼─────┐ ┌─────▼─────┐ ┌─────▼─────┐ ┌───▼────┐
+    │ MINISTRY  │ │   GROUP   │ │  DONATION │ │  VISIT │
+    │  MEMBER   │ │   MEMBER  │ │           │ │        │
+    └─────┬─────┘ └─────┬─────┘ └─────┬─────┘ └────────┘
+    ┌─────▼─────┐ ┌─────▼─────┐ ┌─────▼─────┐
+    │ MINISTRY  │ │   GROUP   │ │ CAMPAIGN  │
+    └───────────┘ └───────────┘ └───────────┘
+
+    ┌───────────┐  ┌───────────┐  ┌───────────┐
+    │   CHILD   │  │  COURSE   │  │  MESSAGE  │
+    └─────┬─────┘  └─────┬─────┘  └─────┬─────┘
+    ┌─────▼─────┐  ┌─────▼─────┐  ┌─────▼─────┐
+    │ CHECK-IN  │  │  LESSON   │  │ TEMPLATE  │
+    └───────────┘  │ENROLLMENT │  └───────────┘
+                   │CERTIFICATE│
+                   └───────────┘
+</pre>
+
+<!-- DEPLOY -->
+<h2>8. Fluxo de Deploy</h2>
+<pre>
+  Developer                  GitHub                 Vercel / VPS
+     │                         │                        │
+     │   git push main         │                        │
+     │────────────────────────▶│                        │
+     │                         │── CI: lint + build     │
+     │                         │── Vercel auto-deploy ─▶│ (Frontend)
+     │                         │── SSH deploy ─────────▶│ (API)
+     │                         │   docker build + up    │
+     │                         │   prisma migrate       │
+     │   ✓ Deploy concluído    │                        │
+     │◀────────────────────────│                        │
+</pre>
+
+<!-- ESTRUTURA -->
+<h2>9. Estrutura de Diretórios</h2>
+<pre>
+ecopulse/
+├── apps/
+│   ├── api/              # NestJS Backend (10 módulos)
+│   ├── web/              # Next.js Dashboard (20+ páginas)
+│   └── portal/           # Captive Portal Wi-Fi
+├── packages/shared/      # Types compartilhados
+├── prisma/               # Schema (30+ models) + Seed
+├── deploy/               # Dockerfile + Nginx + .env
+├── scripts/              # Setup, deploy, SSL
+├── .github/workflows/    # CI/CD
+├── docker-compose.yml    # Dev
+├── docker-compose.prod.yml # Produção
+└── vercel.json           # Frontend deploy
+</pre>
+
+<!-- ACESSO -->
+<h2>10. Acesso Padrão</h2>
+<table>
+  <tr><th>Serviço</th><th>URL</th><th>Credenciais</th></tr>
+  <tr><td>Dashboard</td><td>http://localhost:3001</td><td>admin@ecopulse.com.br / admin123</td></tr>
+  <tr><td>API Swagger</td><td>http://localhost:3000/docs</td><td>Bearer JWT</td></tr>
+  <tr><td>MailHog</td><td>http://localhost:8025</td><td>—</td></tr>
+  <tr><td>Portal Wi-Fi</td><td>http://localhost:3002</td><td>—</td></tr>
+</table>
+
+<div class="footer">
+  <p>ECOPULSE — Plataforma de Gestão de Igrejas</p>
+  <p>Documento gerado automaticamente • Junho 2026</p>
+</div>
+
+</body>
+</html>

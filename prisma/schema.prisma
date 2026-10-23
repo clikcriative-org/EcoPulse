@@ -1,0 +1,987 @@
+// ============================================================
+// ECOPULSE — Schema Prisma Completo
+// A plataforma completa de gestão de igrejas
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum UserRole {
+  SUPER_ADMIN
+  PASTOR
+  ADMIN
+  LEADER
+  VOLUNTEER
+  MEMBER
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  NOT_INFORMED
+}
+
+enum MaritalStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+  WIDOWED
+  NOT_INFORMED
+}
+
+enum MemberStatus {
+  ACTIVE
+  INACTIVE
+  TRANSFERRED
+  DECEASED
+}
+
+enum VisitorStatus {
+  NEW
+  RETURNING
+  REGULAR
+  FAITHFUL
+  INACTIVE
+}
+
+enum DonationType {
+  TITHE
+  OFFERING
+  CAMPAIGN
+  SPECIAL
+}
+
+enum PaymentMethod {
+  PIX
+  CREDIT_CARD
+  DEBIT_CARD
+  BANK_TRANSFER
+  CASH
+}
+
+enum PaymentStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+  REFUNDED
+}
+
+enum TriggerType {
+  FIRST_VISIT
+  NTH_VISIT
+  ABSENCE_DAYS
+  BIRTHDAY
+  RETURN_AFTER_ABSENCE
+  TAG_ADDED
+  FUNNEL_STAGE_CHANGED
+  MANUAL
+  NEW_MEMBER
+  MEMBER_BIRTHDAY
+}
+
+enum ActionType {
+  SEND_WHATSAPP
+  SEND_SMS
+  SEND_EMAIL
+  CREATE_TASK
+  ADD_TAG
+  REMOVE_TAG
+  NOTIFY_TEAM
+  WEBHOOK
+}
+
+enum VisitSource {
+  WIFI_PORTAL
+  MANUAL
+  BEACON
+  API
+  EVENT_CHECKIN
+}
+
+enum MessageStatus {
+  QUEUED
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  UNPAID
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELED
+}
+
+enum NetworkProvider {
+  UNIFI
+  MIKROTIK
+  MERAKI
+  RADIUS_GENERIC
+}
+
+enum GroupType {
+  CELL
+  DISCIPLESHIP
+  MINISTRY_GROUP
+  COURSE_GROUP
+}
+
+enum EventType {
+  SERVICE
+  CELL_MEETING
+  CONFERENCE
+  WORKSHOP
+  SOCIAL
+  OTHER
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  DROPPED
+  PAUSED
+}
+
+// ============================================================
+// MULTI-TENANT CORE
+// ============================================================
+
+model Tenant {
+  id             String   @id @default(uuid()) @db.Uuid
+  name           String   @db.VarChar(255)
+  slug           String   @unique @db.VarChar(100)
+  planId         String?  @map("plan_id") @db.Uuid
+  logoUrl        String?  @map("logo_url") @db.VarChar(500)
+  primaryColor   String   @default("#10b981") @map("primary_color") @db.VarChar(7)
+  secondaryColor String?  @map("secondary_color") @db.VarChar(7)
+  portalConfig   Json     @default("{}") @map("portal_config")
+  whatsappConfig Json     @default("{}") @map("whatsapp_config")
+  networkConfig  Json     @default("{}") @map("network_config")
+  timezone       String   @default("America/Sao_Paulo") @db.VarChar(50)
+  active         Boolean  @default(true)
+  trialEndsAt    DateTime? @map("trial_ends_at")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  plan             Plan?              @relation(fields: [planId], references: [id])
+  users            User[]
+  members          Member[]
+  families         Family[]
+  ministries       Ministry[]
+  groups           Group[]
+  events           Event[]
+  children         Child[]
+  donations        Donation[]
+  campaigns        Campaign[]
+  courses          Course[]
+  visitors         Visitor[]
+  visits           Visit[]
+  devices          Device[]
+  tags             Tag[]
+  automations      Automation[]
+  automationLogs   AutomationLog[]
+  subscription     Subscription?
+  auditLogs        AuditLog[]
+  notes            Note[]
+  tasks            Task[]
+  messageTemplates MessageTemplate[]
+  networkDevices   NetworkDevice[]
+  notifications    Notification[]
+
+  @@map("tenants")
+}
+
+model Plan {
+  id             String  @id @default(uuid()) @db.Uuid
+  name           String  @db.VarChar(50)
+  slug           String  @unique @db.VarChar(50)
+  priceCents     Int     @map("price_cents")
+  maxMembers     Int     @map("max_members")
+  maxUsers       Int     @default(5) @map("max_users")
+  maxMinistries  Int     @default(10) @map("max_ministries")
+  features       Json    @default("[]")
+  stripePriceId  String? @unique @map("stripe_price_id") @db.VarChar(100)
+  active         Boolean @default(true)
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  tenants Tenant[]
+
+  @@map("plans")
+}
+
+// ============================================================
+// USERS & AUTH
+// ============================================================
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  tenantId     String   @map("tenant_id") @db.Uuid
+  email        String   @db.VarChar(255)
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  name         String   @db.VarChar(255)
+  role         UserRole
+  avatarUrl    String?  @map("avatar_url") @db.VarChar(500)
+  phone        String?  @db.VarChar(20)
+  active       Boolean  @default(true)
+  lastLoginAt  DateTime? @map("last_login_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  notes         Note[]
+  tasks         Task[]         @relation("TaskAssignee")
+  tasksCreated  Task[]         @relation("TaskCreator")
+  refreshTokens RefreshToken[]
+
+  @@unique([tenantId, email])
+  @@index([tenantId])
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  token     String    @unique @db.VarChar(500)
+  expiresAt DateTime  @map("expires_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  revokedAt DateTime? @map("revoked_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+// ============================================================
+// MEMBERS & FAMILIES (Gestão de Igreja)
+// ============================================================
+
+model Member {
+  id            String       @id @default(uuid()) @db.Uuid
+  tenantId      String       @map("tenant_id") @db.Uuid
+  fullName      String       @map("full_name") @db.VarChar(255)
+  email         String?      @db.VarChar(255)
+  phone         String?      @db.VarChar(20)
+  birthDate     DateTime?    @map("birth_date") @db.Date
+  gender        Gender       @default(NOT_INFORMED)
+  maritalStatus MaritalStatus @default(NOT_INFORMED) @map("marital_status")
+  photoUrl      String?      @map("photo_url") @db.VarChar(500)
+
+  // Address
+  street        String?      @db.VarChar(255)
+  number        String?      @db.VarChar(20)
+  complement    String?      @db.VarChar(100)
+  neighborhood  String?      @db.VarChar(100)
+  city          String?      @db.VarChar(100)
+  state         String?      @db.VarChar(2)
+  zipCode       String?      @map("zip_code") @db.VarChar(10)
+
+  // Church info
+  status          MemberStatus @default(ACTIVE)
+  memberSince     DateTime?    @map("member_since") @db.Date
+  baptismDate     DateTime?    @map("baptism_date") @db.Date
+  salvationDate   DateTime?    @map("salvation_date") @db.Date
+  isVolunteer     Boolean      @default(false) @map("is_volunteer")
+  isLeader        Boolean      @default(false) @map("is_leader")
+
+  // Emotional check-in
+  lastCheckInMood String?      @map("last_checkin_mood") @db.VarChar(20)
+  lastCheckInAt   DateTime?    @map("last_checkin_at")
+
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant           Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  familyMembers    FamilyMember[]
+  ministryMembers  MinistryMember[]
+  groupMembers     GroupMember[]
+  eventAttendances EventAttendance[]
+  donations        Donation[]
+  enrollments      CourseEnrollment[]
+  certificates     Certificate[]
+  tags             MemberTag[]
+  notes            Note[]            @relation("MemberNotes")
+
+  @@unique([tenantId, email])
+  @@index([tenantId, status])
+  @@index([tenantId, fullName])
+  @@index([tenantId, birthDate])
+  @@map("members")
+}
+
+model Family {
+  id        String   @id @default(uuid()) @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
+  name      String   @db.VarChar(255)
+  photoUrl  String?  @map("photo_url") @db.VarChar(500)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant  Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  members FamilyMember[]
+
+  @@index([tenantId])
+  @@map("families")
+}
+
+model FamilyMember {
+  memberId String @map("member_id") @db.Uuid
+  familyId String @map("family_id") @db.Uuid
+  role     String @default("member") @db.VarChar(30) // head, spouse, child, member
+
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+
+  @@id([memberId, familyId])
+  @@map("family_members")
+}
+
+// ============================================================
+// MINISTRIES & VOLUNTEERS
+// ============================================================
+
+model Ministry {
+  id          String   @id @default(uuid()) @db.Uuid
+  tenantId    String   @map("tenant_id") @db.Uuid
+  name        String   @db.VarChar(255)
+  description String?  @db.Text
+  color       String   @default("#10b981") @db.VarChar(7)
+  iconName    String?  @map("icon_name") @db.VarChar(50)
+  leaderId    String?  @map("leader_id") @db.Uuid
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  tenant  Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  members MinistryMember[]
+
+  @@index([tenantId])
+  @@map("ministries")
+}
+
+model MinistryMember {
+  id         String   @id @default(uuid()) @db.Uuid
+  memberId   String   @map("member_id") @db.Uuid
+  ministryId String   @map("ministry_id") @db.Uuid
+  role       String   @default("volunteer") @db.VarChar(50) // leader, coordinator, volunteer
+  function   String?  @db.VarChar(100) // specific function
+  joinedAt   DateTime @default(now()) @map("joined_at")
+  active     Boolean  @default(true)
+
+  member   Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  ministry Ministry @relation(fields: [ministryId], references: [id], onDelete: Cascade)
+
+  @@unique([memberId, ministryId])
+  @@index([ministryId])
+  @@map("ministry_members")
+}
+
+// ============================================================
+// GROUPS & CELLS
+// ============================================================
+
+model Group {
+  id          String    @id @default(uuid()) @db.Uuid
+  tenantId    String    @map("tenant_id") @db.Uuid
+  name        String    @db.VarChar(255)
+  description String?   @db.Text
+  type        GroupType @default(CELL)
+  leaderId    String?   @map("leader_id") @db.Uuid
+  meetingDay  String?   @map("meeting_day") @db.VarChar(20)
+  meetingTime String?   @map("meeting_time") @db.VarChar(10)
+  address     String?   @db.VarChar(500)
+  maxMembers  Int?      @map("max_members")
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  tenant  Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  members GroupMember[]
+
+  @@index([tenantId, type])
+  @@map("groups")
+}
+
+model GroupMember {
+  id       String   @id @default(uuid()) @db.Uuid
+  memberId String   @map("member_id") @db.Uuid
+  groupId  String   @map("group_id") @db.Uuid
+  role     String   @default("member") @db.VarChar(30) // leader, host, member
+  joinedAt DateTime @default(now()) @map("joined_at")
+  active   Boolean  @default(true)
+
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  group  Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([memberId, groupId])
+  @@index([groupId])
+  @@map("group_members")
+}
+
+// ============================================================
+// EVENTS & ATTENDANCE
+// ============================================================
+
+model Event {
+  id          String    @id @default(uuid()) @db.Uuid
+  tenantId    String    @map("tenant_id") @db.Uuid
+  title       String    @db.VarChar(255)
+  description String?   @db.Text
+  type        EventType @default(SERVICE)
+  startAt     DateTime  @map("start_at")
+  endAt       DateTime? @map("end_at")
+  location    String?   @db.VarChar(500)
+  capacity    Int?
+  isRecurring Boolean   @default(false) @map("is_recurring")
+  recurrence  Json?     // { frequency, daysOfWeek, until }
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  tenant      Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  attendances EventAttendance[]
+
+  @@index([tenantId, startAt])
+  @@index([tenantId, type])
+  @@map("events")
+}
+
+model EventAttendance {
+  id        String   @id @default(uuid()) @db.Uuid
+  eventId   String   @map("event_id") @db.Uuid
+  memberId  String   @map("member_id") @db.Uuid
+  checkInAt DateTime @default(now()) @map("check_in_at")
+  source    String   @default("manual") @db.VarChar(20) // manual, qrcode, wifi
+
+  event  Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, memberId])
+  @@index([memberId])
+  @@map("event_attendances")
+}
+
+// ============================================================
+// RNO KIDS — Children & Check-in
+// ============================================================
+
+model Child {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @map("tenant_id") @db.Uuid
+  fullName       String    @map("full_name") @db.VarChar(255)
+  birthDate      DateTime? @map("birth_date") @db.Date
+  gender         Gender    @default(NOT_INFORMED)
+  photoUrl       String?   @map("photo_url") @db.VarChar(500)
+  allergies      String?   @db.Text
+  medicalNotes   String?   @map("medical_notes") @db.Text
+  parentName     String    @map("parent_name") @db.VarChar(255)
+  parentPhone    String    @map("parent_phone") @db.VarChar(20)
+  parentMemberId String?   @map("parent_member_id") @db.Uuid
+  ageGroup       String?   @map("age_group") @db.VarChar(30) // baby, toddler, preschool, elementary
+  active         Boolean   @default(true)
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  tenant   Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  checkIns ChildCheckIn[]
+
+  @@index([tenantId])
+  @@index([tenantId, parentPhone])
+  @@map("children")
+}
+
+model ChildCheckIn {
+  id           String    @id @default(uuid()) @db.Uuid
+  childId      String    @map("child_id") @db.Uuid
+  checkInAt    DateTime  @default(now()) @map("check_in_at")
+  checkOutAt   DateTime? @map("check_out_at")
+  checkedInBy  String    @map("checked_in_by") @db.VarChar(255)
+  checkedOutBy String?   @map("checked_out_by") @db.VarChar(255)
+  securityCode String    @map("security_code") @db.VarChar(10)
+  room         String?   @db.VarChar(50)
+  notes        String?   @db.Text
+
+  child Child @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  @@index([childId, checkInAt])
+  @@index([securityCode])
+  @@map("child_check_ins")
+}
+
+// ============================================================
+// DONATIONS & CAMPAIGNS (RNO Pay)
+// ============================================================
+
+model Campaign {
+  id          String    @id @default(uuid()) @db.Uuid
+  tenantId    String    @map("tenant_id") @db.Uuid
+  name        String    @db.VarChar(255)
+  description String?   @db.Text
+  goalCents   Int?      @map("goal_cents")
+  raisedCents Int       @default(0) @map("raised_cents")
+  startAt     DateTime  @map("start_at")
+  endAt       DateTime? @map("end_at")
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  tenant    Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  donations Donation[]
+
+  @@index([tenantId])
+  @@map("campaigns")
+}
+
+model Donation {
+  id            String        @id @default(uuid()) @db.Uuid
+  tenantId      String        @map("tenant_id") @db.Uuid
+  memberId      String?       @map("member_id") @db.Uuid
+  campaignId    String?       @map("campaign_id") @db.Uuid
+  type          DonationType  @default(OFFERING)
+  amountCents   Int           @map("amount_cents")
+  paymentMethod PaymentMethod @map("payment_method")
+  paymentStatus PaymentStatus @default(PENDING) @map("payment_status")
+  transactionId String?       @map("transaction_id") @db.VarChar(255)
+  donorName     String?       @map("donor_name") @db.VarChar(255)
+  donorEmail    String?       @map("donor_email") @db.VarChar(255)
+  isRecurring   Boolean       @default(false) @map("is_recurring")
+  notes         String?       @db.Text
+  donatedAt     DateTime      @default(now()) @map("donated_at")
+  createdAt     DateTime      @default(now()) @map("created_at")
+
+  tenant   Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  member   Member?   @relation(fields: [memberId], references: [id])
+  campaign Campaign? @relation(fields: [campaignId], references: [id])
+
+  @@index([tenantId, donatedAt])
+  @@index([tenantId, type])
+  @@index([memberId])
+  @@map("donations")
+}
+
+// ============================================================
+// RNO SCHOOL — Courses & Enrollment
+// ============================================================
+
+model Course {
+  id          String   @id @default(uuid()) @db.Uuid
+  tenantId    String   @map("tenant_id") @db.Uuid
+  name        String   @db.VarChar(255)
+  description String?  @db.Text
+  category    String?  @db.VarChar(100)
+  mode        String   @default("presential") @db.VarChar(20) // presential, online, hybrid
+  maxStudents Int?     @map("max_students")
+  startAt     DateTime? @map("start_at")
+  endAt       DateTime? @map("end_at")
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  tenant       Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  lessons      Lesson[]
+  enrollments  CourseEnrollment[]
+  certificates Certificate[]
+
+  @@index([tenantId])
+  @@map("courses")
+}
+
+model Lesson {
+  id        String    @id @default(uuid()) @db.Uuid
+  courseId   String    @map("course_id") @db.Uuid
+  title     String    @db.VarChar(255)
+  content   String?   @db.Text
+  videoUrl  String?   @map("video_url") @db.VarChar(500)
+  order     Int
+  duration  Int?      // minutes
+  date      DateTime? @db.Date
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@index([courseId, order])
+  @@map("lessons")
+}
+
+model CourseEnrollment {
+  id          String           @id @default(uuid()) @db.Uuid
+  courseId     String           @map("course_id") @db.Uuid
+  memberId    String           @map("member_id") @db.Uuid
+  status      EnrollmentStatus @default(ACTIVE)
+  progress    Int              @default(0) // percentage 0-100
+  enrolledAt  DateTime         @default(now()) @map("enrolled_at")
+  completedAt DateTime?        @map("completed_at")
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, memberId])
+  @@index([memberId])
+  @@map("course_enrollments")
+}
+
+model Certificate {
+  id        String   @id @default(uuid()) @db.Uuid
+  courseId   String   @map("course_id") @db.Uuid
+  memberId  String   @map("member_id") @db.Uuid
+  code      String   @unique @db.VarChar(50)
+  issuedAt  DateTime @default(now()) @map("issued_at")
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([memberId])
+  @@map("certificates")
+}
+
+// ============================================================
+// WI-FI CRM — Visitors & Presence
+// ============================================================
+
+model Visitor {
+  id              String        @id @default(uuid()) @db.Uuid
+  tenantId        String        @map("tenant_id") @db.Uuid
+  fullName        String        @map("full_name") @db.VarChar(255)
+  phone           String        @db.VarChar(20)
+  email           String?       @db.VarChar(255)
+  birthDate       DateTime?     @map("birth_date") @db.Date
+  gender          Gender        @default(NOT_INFORMED)
+  city            String?       @db.VarChar(100)
+  state           String?       @db.VarChar(2)
+  photoUrl        String?       @map("photo_url") @db.VarChar(500)
+
+  status          VisitorStatus @default(NEW)
+  engagementScore Int           @default(0) @map("engagement_score")
+  totalVisits     Int           @default(1) @map("total_visits")
+  lastVisitAt     DateTime?     @map("last_visit_at")
+  firstVisitAt    DateTime      @default(now()) @map("first_visit_at")
+
+  isFirstVisit    Boolean       @default(true) @map("is_first_visit")
+  howDidYouHear   String?       @map("how_did_you_hear") @db.VarChar(100)
+
+  // LGPD
+  consentAt       DateTime?     @map("consent_at")
+  optedOut        Boolean       @default(false) @map("opted_out")
+
+  metadata        Json          @default("{}")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  tenant         Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  visits         Visit[]
+  devices        Device[]
+  automationLogs AutomationLog[]
+  messages       Message[]
+
+  @@unique([tenantId, phone])
+  @@index([tenantId, status])
+  @@index([tenantId, lastVisitAt])
+  @@map("visitors")
+}
+
+model Visit {
+  id              String      @id @default(uuid()) @db.Uuid
+  visitorId       String      @map("visitor_id") @db.Uuid
+  tenantId        String      @map("tenant_id") @db.Uuid
+  checkInAt       DateTime    @default(now()) @map("check_in_at")
+  checkOutAt      DateTime?   @map("check_out_at")
+  durationMinutes Int?        @map("duration_minutes")
+  deviceMac       String?     @map("device_mac") @db.VarChar(17)
+  source          VisitSource @default(WIFI_PORTAL)
+  metadata        Json        @default("{}")
+
+  visitor Visitor @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+  tenant  Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, checkInAt])
+  @@index([visitorId, checkInAt])
+  @@map("visits")
+}
+
+model Device {
+  id         String   @id @default(uuid()) @db.Uuid
+  visitorId  String   @map("visitor_id") @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  macAddress String   @map("mac_address") @db.VarChar(17)
+  deviceName String?  @map("device_name") @db.VarChar(100)
+  lastSeenAt DateTime @default(now()) @map("last_seen_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  visitor Visitor @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+  tenant  Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, macAddress])
+  @@map("devices")
+}
+
+// ============================================================
+// TAGS & SEGMENTATION
+// ============================================================
+
+model Tag {
+  id        String  @id @default(uuid()) @db.Uuid
+  tenantId  String  @map("tenant_id") @db.Uuid
+  name      String  @db.VarChar(50)
+  color     String  @default("#10b981") @db.VarChar(7)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  tenant  Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  members MemberTag[]
+
+  @@unique([tenantId, name])
+  @@map("tags")
+}
+
+model MemberTag {
+  memberId String   @map("member_id") @db.Uuid
+  tagId    String   @map("tag_id") @db.Uuid
+  addedAt  DateTime @default(now()) @map("added_at")
+
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([memberId, tagId])
+  @@map("member_tags")
+}
+
+// ============================================================
+// AUTOMATIONS ENGINE
+// ============================================================
+
+model Automation {
+  id              String      @id @default(uuid()) @db.Uuid
+  tenantId        String      @map("tenant_id") @db.Uuid
+  name            String      @db.VarChar(255)
+  description     String?     @db.VarChar(500)
+  triggerType     TriggerType @map("trigger_type")
+  triggerConfig   Json        @default("{}") @map("trigger_config")
+  conditions      Json        @default("[]")
+  actions         Json
+  active          Boolean     @default(true)
+  isTemplate      Boolean     @default(false) @map("is_template")
+  timesTriggered  Int         @default(0) @map("times_triggered")
+  lastTriggeredAt DateTime?   @map("last_triggered_at")
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+
+  tenant Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  logs   AutomationLog[]
+
+  @@index([tenantId, active])
+  @@index([tenantId, triggerType])
+  @@map("automations")
+}
+
+model AutomationLog {
+  id           String     @id @default(uuid()) @db.Uuid
+  automationId String     @map("automation_id") @db.Uuid
+  visitorId    String?    @map("visitor_id") @db.Uuid
+  tenantId     String     @map("tenant_id") @db.Uuid
+  actionType   ActionType @map("action_type")
+  status       String     @db.VarChar(20)
+  result       Json       @default("{}")
+  error        String?    @db.Text
+  executedAt   DateTime   @default(now()) @map("executed_at")
+
+  automation Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  visitor    Visitor?   @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+  tenant     Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, executedAt])
+  @@index([automationId])
+  @@map("automation_logs")
+}
+
+// ============================================================
+// MESSAGING
+// ============================================================
+
+model MessageTemplate {
+  id        String  @id @default(uuid()) @db.Uuid
+  tenantId  String  @map("tenant_id") @db.Uuid
+  name      String  @db.VarChar(100)
+  channel   String  @db.VarChar(20) // whatsapp, email, sms
+  content   Json
+  variables Json    @default("[]")
+  active    Boolean @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  tenant   Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  messages Message[]
+
+  @@unique([tenantId, name])
+  @@map("message_templates")
+}
+
+model Message {
+  id          String        @id @default(uuid()) @db.Uuid
+  tenantId    String        @map("tenant_id") @db.Uuid
+  visitorId   String?       @map("visitor_id") @db.Uuid
+  templateId  String?       @map("template_id") @db.Uuid
+  channel     String        @db.VarChar(20)
+  to          String        @db.VarChar(255)
+  content     Json
+  status      MessageStatus @default(QUEUED)
+  externalId  String?       @map("external_id") @db.VarChar(100)
+  sentAt      DateTime?     @map("sent_at")
+  failedAt    DateTime?     @map("failed_at")
+  errorMsg    String?       @map("error_message") @db.VarChar(500)
+  createdAt   DateTime      @default(now()) @map("created_at")
+
+  visitor  Visitor?         @relation(fields: [visitorId], references: [id])
+  template MessageTemplate? @relation(fields: [templateId], references: [id])
+
+  @@index([tenantId, createdAt])
+  @@index([externalId])
+  @@map("messages")
+}
+
+// ============================================================
+// TASKS, NOTES & NOTIFICATIONS
+// ============================================================
+
+model Task {
+  id          String     @id @default(uuid()) @db.Uuid
+  tenantId    String     @map("tenant_id") @db.Uuid
+  title       String     @db.VarChar(255)
+  description String?    @db.Text
+  status      TaskStatus @default(PENDING)
+  priority    Int        @default(0)
+  assigneeId  String?    @map("assignee_id") @db.Uuid
+  createdById String     @map("created_by_id") @db.Uuid
+  dueAt       DateTime?  @map("due_at")
+  completedAt DateTime?  @map("completed_at")
+  createdAt   DateTime   @default(now()) @map("created_at")
+
+  tenant    Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  assignee  User?  @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  createdBy User   @relation("TaskCreator", fields: [createdById], references: [id])
+
+  @@index([tenantId, status])
+  @@index([assigneeId, status])
+  @@map("tasks")
+}
+
+model Note {
+  id        String   @id @default(uuid()) @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  memberId  String?  @map("member_id") @db.Uuid
+  content   String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User    @relation(fields: [userId], references: [id])
+  member Member? @relation("MemberNotes", fields: [memberId], references: [id])
+
+  @@index([memberId, createdAt])
+  @@map("notes")
+}
+
+model Notification {
+  id        String   @id @default(uuid()) @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  title     String   @db.VarChar(255)
+  body      String?  @db.Text
+  type      String   @db.VarChar(50)
+  readAt    DateTime? @map("read_at")
+  data      Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, userId, readAt])
+  @@map("notifications")
+}
+
+// ============================================================
+// NETWORK DEVICES (Roteadores)
+// ============================================================
+
+model NetworkDevice {
+  id          String          @id @default(uuid()) @db.Uuid
+  tenantId    String          @map("tenant_id") @db.Uuid
+  name        String          @db.VarChar(100)
+  provider    NetworkProvider
+  host        String          @db.VarChar(255)
+  port        Int?
+  username    String?         @db.VarChar(100)
+  passwordEnc String?         @map("password_enc") @db.VarChar(500)
+  apiKey      String?         @map("api_key") @db.VarChar(500)
+  config      Json            @default("{}")
+  active      Boolean         @default(true)
+  lastSyncAt  DateTime?       @map("last_sync_at")
+  createdAt   DateTime        @default(now()) @map("created_at")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@map("network_devices")
+}
+
+// ============================================================
+// BILLING
+// ============================================================
+
+model Subscription {
+  id                 String             @id @default(uuid()) @db.Uuid
+  tenantId           String             @unique @map("tenant_id") @db.Uuid
+  stripeCustomerId   String             @map("stripe_customer_id") @db.VarChar(100)
+  stripeSubId        String             @unique @map("stripe_subscription_id") @db.VarChar(100)
+  status             SubscriptionStatus @default(TRIALING)
+  currentPeriodStart DateTime           @map("current_period_start")
+  currentPeriodEnd   DateTime           @map("current_period_end")
+  cancelAtPeriodEnd  Boolean            @default(false) @map("cancel_at_period_end")
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime           @updatedAt @map("updated_at")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([stripeCustomerId])
+  @@map("subscriptions")
+}
+
+// ============================================================
+// AUDIT LOG
+// ============================================================
+
+model AuditLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  userId     String?  @map("user_id") @db.Uuid
+  action     String   @db.VarChar(50)
+  entityType String   @map("entity_type") @db.VarChar(50)
+  entityId   String   @map("entity_id") @db.Uuid
+  changes    Json     @default("{}")
+  ipAddress  String?  @map("ip_address") @db.VarChar(45)
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, createdAt])
+  @@index([tenantId, entityType, entityId])
+  @@map("audit_logs")
+}

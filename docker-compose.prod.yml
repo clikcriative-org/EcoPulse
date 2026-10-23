@@ -1,0 +1,115 @@
+# ============================================================
+# ECOPULSE — Production (VPS Hostinger + Traefik)
+# api + web + postgres + redis | rede externa do Traefik: "hospedar"
+#
+# Padrão de labels idêntico ao farol-cafe:
+#  - router *-http (entrypoint web/80) com redirect HTTPS
+#  - router * (entrypoint websecure/443) com tls.certresolver=letsencrypt
+# Middleware de redirect próprio: ecopulse-https (independe do farol-cafe).
+#
+# Isolamento:
+#  - web/api na rede "hospedar" (roteadas pelo Traefik).
+#  - postgres/redis SÓ na rede interna (invisíveis à internet e ao Traefik).
+#  - sem portas concorrentes no host; name: ecopulse namespaceia tudo.
+# ============================================================
+
+name: ecopulse
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-ecopulse}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME:-ecopulse}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks: [internal]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-ecopulse}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    networks: [internal]
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.api
+    restart: unless-stopped
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://${DB_USER:-ecopulse}:${DB_PASSWORD}@postgres:5432/${DB_NAME:-ecopulse}?schema=public
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: 900
+      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
+      REFRESH_TOKEN_EXPIRES_IN: 604800
+      CORS_ORIGINS: ${CORS_ORIGINS}
+    networks: [internal, hospedar]
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=hospedar"
+      - "traefik.http.middlewares.ecopulse-https.redirectscheme.scheme=https"
+      # HTTP (80) -> redireciona p/ HTTPS
+      - "traefik.http.routers.ecopulse-api-http.entrypoints=web"
+      - "traefik.http.routers.ecopulse-api-http.rule=Host(`api.ecopulse.art`)"
+      - "traefik.http.routers.ecopulse-api-http.middlewares=ecopulse-https"
+      # HTTPS (443)
+      - "traefik.http.routers.ecopulse-api.entrypoints=websecure"
+      - "traefik.http.routers.ecopulse-api.rule=Host(`api.ecopulse.art`)"
+      - "traefik.http.routers.ecopulse-api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.ecopulse-api.loadbalancer.server.port=3000"
+
+  web:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.web
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    restart: unless-stopped
+    depends_on: [api]
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+    networks: [hospedar]
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=hospedar"
+      - "traefik.http.middlewares.ecopulse-https.redirectscheme.scheme=https"
+      # HTTP (80) -> redireciona p/ HTTPS
+      - "traefik.http.routers.ecopulse-web-http.entrypoints=web"
+      - "traefik.http.routers.ecopulse-web-http.rule=Host(`ecopulse.art`) || Host(`www.ecopulse.art`)"
+      - "traefik.http.routers.ecopulse-web-http.middlewares=ecopulse-https"
+      # HTTPS (443)
+      - "traefik.http.routers.ecopulse-web.entrypoints=websecure"
+      - "traefik.http.routers.ecopulse-web.rule=Host(`ecopulse.art`) || Host(`www.ecopulse.art`)"
+      - "traefik.http.routers.ecopulse-web.tls.certresolver=letsencrypt"
+      - "traefik.http.services.ecopulse-web.loadbalancer.server.port=3001"
+
+networks:
+  internal:
+    driver: bridge
+  hospedar:
+    external: true
+
+volumes:
+  postgres_data:
+  redis_data:
